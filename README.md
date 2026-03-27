@@ -14,51 +14,6 @@
 
 ![The Twin Trees — Both trees with Da'at Abyss between them](screenshots/hero.png)
 
----
-
-</div>
-
-```
-                        K E T H E R
-                       ╱     |     ╲
-                 Chokmah ----+---- Binah
-                   ╲   ╲    |    ╱   ╱
-                    ╲   ╲   |   ╱   ╱
-                     ╲   D A ' A T  ╱        ← The Abyss
-                      ╲     |     ╱
-                 Chesed ----+---- Geburah
-                   ╲   ╲    |    ╱   ╱
-                    ╲   Tiphareth   ╱
-                     ╲  ╱   |   ╲  ╱
-                 Netzach ---+--- Hod
-                       ╲    |    ╱
-                        Y E S O D
-                            |
-                       M A L K U T H
-
-         ─────────────────────────────────
-                    ║ DA'AT ║
-                    ║ ABYSS ║
-         ─────────────────────────────────
-
-                      L I L I T H
-                            |
-                       GAMALIEL
-                       ╱    |    ╲
-                 Samael ---+--- A'arab Zaraq
-                    ╱   Thagirion   ╲
-                   ╱   ╱    |    ╲   ╲
-                 Golachab --+-- Gha'agsheklah
-                      ╲     |     ╱
-                     S A T A R I E L
-                       ╲    |    ╱
-                 Ghogiel ---+--- Satariel
-                       ╲    |    ╱
-                     T H A U M I E L
-```
-
-<div align="center">
-
 *A real-time interactive 3D visualization of the complete Kabbalistic dual-tree system.*
 *Two trees. One abyss. Twenty-two paths. Rendered in WebGL.*
 
@@ -76,32 +31,6 @@ The Tree of Life emanates downward from Kether (Crown) through ten spheres of di
 
 ---
 
-## Architecture
-
-```
-┌─────────────────────────────────────────────────────┐
-│                                                     │
-│   ┌───────────────────────────────┐                 │
-│   │     TREE OF LIFE  (y = +5)    │  ← Upper Plane  │
-│   │  10 Sephiroth · Golden Paths  │                 │
-│   └───────────────┬───────────────┘                 │
-│                   │                                 │
-│              ╔════╧════╗                            │
-│              ║  DA'AT  ║  ← y = 0 · The Abyss      │
-│              ║ Gateway ║                            │
-│              ╚════╤════╝                            │
-│                   │                                 │
-│   ┌───────────────┴───────────────┐                 │
-│   │    TREE OF DEATH  (y = -5)    │  ← Lower Plane  │
-│   │  10 Qliphoth · Crimson Tunnels│                 │
-│   └───────────────────────────────┘                 │
-│                                                     │
-│            Starfield Background · Bloom             │
-└─────────────────────────────────────────────────────┘
-```
-
----
-
 ## Features
 
 <table>
@@ -109,22 +38,22 @@ The Tree of Life emanates downward from Kether (Crown) through ten spheres of di
 <td width="50%">
 
 ### Sephiroth & Qliphoth
-Each of the **20 spheres** is interactive — click to reveal:
+Each of the **20 spheres** is interactive — rendered as glass-like orbs with `MeshPhysicalMaterial` transmission, clearcoat, and IOR refraction. Click to reveal:
 - Hebrew name and glyph
 - English translation
 - Divine Name / Demonic Ruler
 - Archangel / Archdevil
-- Kabbalistic World (Atziluth → Assiah)
+- Kabbalistic World (Atziluth, Briah, Yetzirah, Assiah)
 - Descriptive text from tradition
 
 </td>
 <td width="50%">
 
 ### 22 Paths of Wisdom
-Every path between sephiroth carries meaning:
+Every path is a bark-textured branch with procedural 512px textures and bump mapping. Both trees display labeled paths — click any to reveal:
 - **Hebrew letter** and pronunciation
 - **English meaning** (Ox, House, Camel...)
-- **Tarot Major Arcana** correspondence
+- **Tarot Major Arcana** correspondence (Life) or shadow (Death)
 - **Element or Zodiac** attribution
 - **Connection endpoints** (which spheres it bridges)
 
@@ -146,7 +75,7 @@ The hidden 11th sephira rendered as:
 ### Sacred Overlays
 Toggle additional mystical geometry:
 - **Metatron's Cube** wireframe overlay
-- **Lightning Flash** — animated bolt tracing the path of emanation (1→2→3→...→10)
+- **Lightning Flash** — animated bolt tracing the path of emanation (1 to 2 to 3 to ... 10)
 - **Four Worlds** labels along the vertical axis
 - **Bloom post-processing** for ethereal glow
 
@@ -160,87 +89,79 @@ Toggle additional mystical geometry:
 |:---|:---|
 | `Left Drag` | Orbit camera around the scene |
 | `Right Drag` | Pan the viewport |
-| `Scroll` | Zoom in and out |
+| `Scroll` | Zoom in and out (min 1, max 200 units) |
 | `Click Sphere` | Open info panel for that sephira or qlipha |
 | `Click Path` | Show Hebrew letter, Tarot card, element |
-| `Vertical / Horizontal` | Toggle tree orientation with smooth animation |
+| `3D / Top / Side View` | One-shot camera transitions to preset angles |
 | `Auto Rotate` | Continuous slow rotation for presentation |
 
 ---
 
 ## The Ten Sephiroth
 
-```
- #   Name          Translation        Pillar       World
-─── ─────────────  ─────────────────  ───────────  ──────────
- 1   Kether        Crown              Middle       Atziluth
- 2   Chokmah       Wisdom             Mercy        Atziluth
- 3   Binah         Understanding      Severity     Briah
- 4   Chesed        Mercy              Mercy        Briah
- 5   Geburah       Strength           Severity     Yetzirah
- 6   Tiphareth     Beauty             Middle       Yetzirah
- 7   Netzach       Victory            Mercy        Yetzirah
- 8   Hod           Splendour          Severity     Yetzirah
- 9   Yesod         Foundation         Middle       Yetzirah
-10   Malkuth       Kingdom            Middle       Assiah
-     Da'at         Knowledge          Middle       The Abyss
-```
+| # | Name | Translation | Pillar | World |
+|:--|:-----|:------------|:-------|:------|
+| 1 | Kether | Crown | Middle | Atziluth |
+| 2 | Chokmah | Wisdom | Mercy | Atziluth |
+| 3 | Binah | Understanding | Severity | Briah |
+| 4 | Chesed | Mercy | Mercy | Briah |
+| 5 | Geburah | Strength | Severity | Yetzirah |
+| 6 | Tiphareth | Beauty | Middle | Yetzirah |
+| 7 | Netzach | Victory | Mercy | Yetzirah |
+| 8 | Hod | Splendour | Severity | Yetzirah |
+| 9 | Yesod | Foundation | Middle | Yetzirah |
+| 10 | Malkuth | Kingdom | Middle | Assiah |
+| 11 | Da'at | Knowledge | Middle | The Abyss |
 
 ## The Ten Qliphoth
 
-```
- #   Name            Translation          Demon
-─── ───────────────  ───────────────────  ──────────────────
- 1   Thaumiel        Twin Gods            Satan / Moloch
- 2   Ghogiel         The Hinderers        Beelzebub
- 3   Satariel        The Concealers       Lucifuge Rofocale
- 4   Gha'agsheklah   The Devourers        Astaroth
- 5   Golachab        The Burners          Asmodeus
- 6   Thagirion       The Disputers        Belphegor
- 7   A'arab Zaraq    Ravens of Dispersion Baal
- 8   Samael          Poison of God        Adrammelech
- 9   Gamaliel        The Obscene Ones     Lilith
-10   Lilith          The Whisperers       Naamah
-```
+| # | Name | Translation | Demon |
+|:--|:-----|:------------|:------|
+| 1 | Thaumiel | Twin Gods | Satan / Moloch |
+| 2 | Ghogiel | The Hinderers | Beelzebub |
+| 3 | Satariel | The Concealers | Lucifuge Rofocale |
+| 4 | Gha'agsheklah | The Devourers | Astaroth |
+| 5 | Golachab | The Burners | Asmodeus |
+| 6 | Thagirion | The Disputers | Belphegor |
+| 7 | A'arab Zaraq | Ravens of Dispersion | Baal |
+| 8 | Samael | Poison of God | Adrammelech |
+| 9 | Gamaliel | The Obscene Ones | Lilith |
+| 10 | Lilith | The Whisperers | Naamah |
 
 ## The 22 Paths
 
-```
- Path   Letter    Name      Meaning         Tarot                 Attribution
-────── ──────── ────────  ──────────────  ────────────────────── ────────────
- 11     א        Aleph     Ox              The Fool               Air
- 12     ב        Beth      House           The Magician           Mercury
- 13     ג        Gimel     Camel           High Priestess         Moon
- 14     ד        Daleth    Door            The Empress            Venus
- 15     ה        Heh       Window          The Emperor            Aries
- 16     ו        Vav       Nail            Hierophant             Taurus
- 17     ז        Zayin     Sword           The Lovers             Gemini
- 18     ח        Cheth     Fence           The Chariot            Cancer
- 19     ט        Teth      Serpent         Strength               Leo
- 20     י        Yod       Hand            The Hermit             Virgo
- 21     כ        Kaph      Palm            Wheel of Fortune       Jupiter
- 22     ל        Lamed     Ox Goad         Justice                Libra
- 23     מ        Mem       Water           Hanged Man             Water
- 24     נ        Nun       Fish            Death                  Scorpio
- 25     ס        Samekh    Prop            Temperance             Sagittarius
- 26     ע        Ayin      Eye             The Devil              Capricorn
- 27     פ        Peh       Mouth           The Tower              Mars
- 28     צ        Tzaddi    Fishhook        The Star               Aquarius
- 29     ק        Qoph      Back of Head    The Moon               Pisces
- 30     ר        Resh      Head            The Sun                Sun
- 31     ש        Shin      Tooth           Judgement              Fire
- 32     ת        Tav       Cross           The World              Saturn
-```
+| Path | Letter | Name | Meaning | Tarot | Attribution |
+|:-----|:-------|:-----|:--------|:------|:------------|
+| 11 | א | Aleph | Ox | The Fool | Air |
+| 12 | ב | Beth | House | The Magician | Mercury |
+| 13 | ג | Gimel | Camel | High Priestess | Moon |
+| 14 | ד | Daleth | Door | The Empress | Venus |
+| 15 | ה | Heh | Window | The Emperor | Aries |
+| 16 | ו | Vav | Nail | Hierophant | Taurus |
+| 17 | ז | Zayin | Sword | The Lovers | Gemini |
+| 18 | ח | Cheth | Fence | The Chariot | Cancer |
+| 19 | ט | Teth | Serpent | Strength | Leo |
+| 20 | י | Yod | Hand | The Hermit | Virgo |
+| 21 | כ | Kaph | Palm | Wheel of Fortune | Jupiter |
+| 22 | ל | Lamed | Ox Goad | Justice | Libra |
+| 23 | מ | Mem | Water | Hanged Man | Water |
+| 24 | נ | Nun | Fish | Death | Scorpio |
+| 25 | ס | Samekh | Prop | Temperance | Sagittarius |
+| 26 | ע | Ayin | Eye | The Devil | Capricorn |
+| 27 | פ | Peh | Mouth | The Tower | Mars |
+| 28 | צ | Tzaddi | Fishhook | The Star | Aquarius |
+| 29 | ק | Qoph | Back of Head | The Moon | Pisces |
+| 30 | ר | Resh | Head | The Sun | Sun |
+| 31 | ש | Shin | Tooth | Judgement | Fire |
+| 32 | ת | Tav | Cross | The World | Saturn |
 
 ---
 
 ## Kabbalistic Sources
 
-The visualization follows established traditions:
-
 | Aspect | Source |
 |:---|:---|
-| Sephiroth positions | Three-pillar layout (Severity · Mildness · Mercy) |
+| Sephiroth positions | Three-pillar layout (Severity, Mildness, Mercy) |
 | Da'at placement | Zohar, Lurianic Kabbalah — in the Abyss between Supernals and lower 7 |
 | Qliphoth structure | Hermetic Qabalah — same pillar layout as sephirotic mirrors |
 | Path correspondences | Golden Dawn tradition — Hebrew alphabet to Tarot mapping |
@@ -252,15 +173,19 @@ The visualization follows established traditions:
 
 ## Tech
 
-```
-Three.js r164          3D scene graph and WebGL rendering
-UnrealBloomPass        Post-processing ethereal glow
-OrbitControls          Camera orbit, pan, zoom
-EffectComposer         Multi-pass render pipeline
-Vanilla JS             Zero build step, zero dependencies
-Single HTML file       Entire app in one index.html
-Cloudflare Pages       Edge-deployed globally
-```
+| Component | Purpose |
+|:---|:---|
+| Three.js r164 | 3D scene graph and WebGL rendering |
+| MeshPhysicalMaterial | Glass-like orbs with transmission, clearcoat, IOR |
+| PMREMGenerator | Procedural environment maps for reflections |
+| Procedural Canvas Textures | 512px bark textures with bump maps for branches |
+| UnrealBloomPass | Post-processing ethereal glow |
+| ACES Filmic Tone Mapping | Cinematic color grading |
+| OrbitControls | Camera orbit, pan, zoom |
+| EffectComposer | Multi-pass render pipeline |
+| Vanilla JS | Zero build step, zero dependencies |
+| Single HTML file | Entire app in one `index.html` |
+| Cloudflare Pages | Edge-deployed globally |
 
 ---
 
@@ -286,17 +211,13 @@ npx wrangler pages deploy . --project-name=twin-trees
 
 <div align="center">
 
-## **[ [Enter the Abyss](https://twin-trees.pages.dev) ]**
+### **[ [Enter the Abyss](https://twin-trees.pages.dev) ]**
 
 ---
 
-```
-       "As above, so below.
-        As within, so without.
-        As the universe, so the soul."
+*As above, so below. As within, so without. As the universe, so the soul.*
 
-                    — The Emerald Tablet
-```
+*— The Emerald Tablet*
 
 ---
 
