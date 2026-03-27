@@ -1,0 +1,928 @@
+{
+  "_metadata": {
+    "description": "Kabbalistic Tree of Life and Tree of Death (Qliphoth) structured data for 3D visualization",
+    "coordinateSystem": {
+      "note": "2D coordinates use a normalized grid. X: -1 (left/Severity) to +1 (right/Mercy), 0 = center/Mildness. Y: 0 (bottom/Malkuth) to 4 (top/Kether). Z: 0 for Tree of Life front plane; negative Z for Tree of Death (mirror/shadow). For 3D, the Tree of Death is reflected below or behind the Tree of Life, separated by the Abyss plane.",
+      "pillars": {
+        "left": { "name": "Pillar of Severity (Boaz)", "x": -1 },
+        "center": { "name": "Pillar of Mildness (Equilibrium)", "x": 0 },
+        "right": { "name": "Pillar of Mercy (Jachin)", "x": 1 }
+      },
+      "yLevels": {
+        "level0": { "y": 0, "description": "Malkuth / Lilith-Nahemoth" },
+        "level1": { "y": 1, "description": "Yesod-Hod-Netzach / Gamaliel-Samael-A'arab Zaraq" },
+        "level2": { "y": 2, "description": "Tiphareth-Geburah-Chesed / Thagirion-Golachab-Gamchicoth" },
+        "level3": { "y": 2.5, "description": "Da'at / The Abyss" },
+        "level4": { "y": 3, "description": "Binah-Chokmah / Satariel-Ghagiel (Supernal)" },
+        "level5": { "y": 4, "description": "Kether / Thaumiel (Crown)" }
+      }
+    },
+    "sources": [
+      "Aleister Crowley, Liber 777 (Queen Scale / Briah color attributions)",
+      "Kenneth Grant, Nightside of Eden (Tunnels of Set)",
+      "Golden Dawn tradition (path correspondences)",
+      "Hermetic Qabalah (sephirothic structure)"
+    ]
+  },
+
+  "treeOfLife": {
+    "name": "Etz Chaim (Tree of Life)",
+    "description": "The ten Sephiroth represent emanations through which the Infinite (Ein Sof) reveals itself. Arranged on three pillars: Severity (left/feminine), Mildness (center/balance), and Mercy (right/masculine).",
+
+    "sephiroth": [
+      {
+        "number": 1,
+        "nameHebrew": "Kether",
+        "hebrewScript": "\u05db\u05ea\u05e8",
+        "nameEnglish": "Crown",
+        "pillar": "Mildness (Center)",
+        "position": { "x": 0, "y": 4, "z": 0 },
+        "queenScaleColor": "White Brilliance",
+        "colorHex": "#FFFFFF",
+        "planet": "Primum Mobile / Neptune",
+        "element": null,
+        "godName": "Eheieh",
+        "archangel": "Metatron",
+        "description": "The first emanation, pure divine will, the point of origin from which all existence flows. Represents unity and the initial impulse of creation."
+      },
+      {
+        "number": 2,
+        "nameHebrew": "Chokmah",
+        "hebrewScript": "\u05d7\u05db\u05de\u05d4",
+        "nameEnglish": "Wisdom",
+        "pillar": "Mercy (Right)",
+        "position": { "x": 1, "y": 3, "z": 0 },
+        "queenScaleColor": "Grey",
+        "colorHex": "#808080",
+        "planet": "Zodiac / Uranus",
+        "element": null,
+        "godName": "Yah",
+        "archangel": "Raziel",
+        "description": "Active masculine force, the great stimulator. Wisdom as the first flash of creative insight, the dynamic father principle."
+      },
+      {
+        "number": 3,
+        "nameHebrew": "Binah",
+        "hebrewScript": "\u05d1\u05d9\u05e0\u05d4",
+        "nameEnglish": "Understanding",
+        "pillar": "Severity (Left)",
+        "position": { "x": -1, "y": 3, "z": 0 },
+        "queenScaleColor": "Black",
+        "colorHex": "#000000",
+        "planet": "Saturn",
+        "element": null,
+        "godName": "YHVH Elohim",
+        "archangel": "Tzaphkiel",
+        "description": "Receptive feminine force, the great sea. Understanding as the womb that gives form to wisdom, the dark mother principle."
+      },
+      {
+        "number": 4,
+        "nameHebrew": "Chesed",
+        "hebrewScript": "\u05d7\u05e1\u05d3",
+        "nameEnglish": "Mercy (Loving-kindness)",
+        "pillar": "Mercy (Right)",
+        "position": { "x": 1, "y": 2, "z": 0 },
+        "queenScaleColor": "Blue",
+        "colorHex": "#0000FF",
+        "planet": "Jupiter",
+        "element": null,
+        "godName": "El",
+        "archangel": "Tzadkiel",
+        "description": "Expansive love and benevolence. The first sephira below the Abyss, manifesting as grace, abundance, and the organizing principle of creation."
+      },
+      {
+        "number": 5,
+        "nameHebrew": "Geburah",
+        "hebrewScript": "\u05d2\u05d1\u05d5\u05e8\u05d4",
+        "nameEnglish": "Severity (Strength)",
+        "pillar": "Severity (Left)",
+        "position": { "x": -1, "y": 2, "z": 0 },
+        "queenScaleColor": "Scarlet Red",
+        "colorHex": "#FF2400",
+        "planet": "Mars",
+        "element": null,
+        "godName": "Elohim Gibor",
+        "archangel": "Khamael",
+        "description": "Disciplined strength and judgment. The counterbalance to Chesed, providing necessary restriction, boundaries, and the power to destroy what is outworn."
+      },
+      {
+        "number": 6,
+        "nameHebrew": "Tiphareth",
+        "hebrewScript": "\u05ea\u05e4\u05d0\u05e8\u05ea",
+        "nameEnglish": "Beauty (Harmony)",
+        "pillar": "Mildness (Center)",
+        "position": { "x": 0, "y": 2, "z": 0 },
+        "queenScaleColor": "Golden Yellow",
+        "colorHex": "#FFD700",
+        "planet": "Sun",
+        "element": null,
+        "godName": "YHVH Eloah ve-Da'at",
+        "archangel": "Raphael",
+        "description": "The heart of the Tree, harmonizing all forces. Beauty as the perfect balance of mercy and severity, the center of consciousness and the solar principle."
+      },
+      {
+        "number": 7,
+        "nameHebrew": "Netzach",
+        "hebrewScript": "\u05e0\u05e6\u05d7",
+        "nameEnglish": "Victory (Eternity)",
+        "pillar": "Mercy (Right)",
+        "position": { "x": 1, "y": 1, "z": 0 },
+        "queenScaleColor": "Emerald Green",
+        "colorHex": "#50C878",
+        "planet": "Venus",
+        "element": null,
+        "godName": "YHVH Tzabaoth",
+        "archangel": "Haniel",
+        "description": "The force of nature, desire, emotion, and artistic inspiration. Victory through endurance and the drive of feelings and instincts."
+      },
+      {
+        "number": 8,
+        "nameHebrew": "Hod",
+        "hebrewScript": "\u05d4\u05d5\u05d3",
+        "nameEnglish": "Splendor (Glory)",
+        "pillar": "Severity (Left)",
+        "position": { "x": -1, "y": 1, "z": 0 },
+        "queenScaleColor": "Orange",
+        "colorHex": "#FF8C00",
+        "planet": "Mercury",
+        "element": null,
+        "godName": "Elohim Tzabaoth",
+        "archangel": "Michael",
+        "description": "Intellect, communication, and rational thought. The glory of mental processes that give structure to Netzach's raw emotional energy."
+      },
+      {
+        "number": 9,
+        "nameHebrew": "Yesod",
+        "hebrewScript": "\u05d9\u05e1\u05d5\u05d3",
+        "nameEnglish": "Foundation",
+        "pillar": "Mildness (Center)",
+        "position": { "x": 0, "y": 0.5, "z": 0 },
+        "queenScaleColor": "Violet",
+        "colorHex": "#7F00FF",
+        "planet": "Moon",
+        "element": null,
+        "godName": "Shaddai El Chai",
+        "archangel": "Gabriel",
+        "description": "The astral foundation, the lunar mirror that collects and transmits all influences to Malkuth. The subconscious, dreams, and the etheric body."
+      },
+      {
+        "number": 10,
+        "nameHebrew": "Malkuth",
+        "hebrewScript": "\u05de\u05dc\u05db\u05d5\u05ea",
+        "nameEnglish": "Kingdom",
+        "pillar": "Mildness (Center)",
+        "position": { "x": 0, "y": 0, "z": 0 },
+        "queenScaleColor": "Citrine, Olive, Russet, and Black (quartered)",
+        "colorHex": "#E4D00A",
+        "colorHexQuartered": {
+          "citrine": "#E4D00A",
+          "olive": "#808000",
+          "russet": "#80461B",
+          "black": "#000000"
+        },
+        "planet": "Earth",
+        "element": "Earth",
+        "godName": "Adonai ha-Aretz",
+        "archangel": "Sandalphon",
+        "description": "The physical world, the final manifestation. The Kingdom where all divine forces culminate in material reality."
+      }
+    ],
+
+    "paths": [
+      {
+        "pathNumber": 11,
+        "connects": [1, 2],
+        "connectsNames": ["Kether", "Chokmah"],
+        "hebrewLetter": "Aleph",
+        "hebrewScript": "\u05d0",
+        "letterMeaning": "Ox",
+        "tarotCard": "The Fool (0)",
+        "attribution": "Air",
+        "queenScaleColor": "Sky Blue",
+        "colorHex": "#87CEEB"
+      },
+      {
+        "pathNumber": 12,
+        "connects": [1, 3],
+        "connectsNames": ["Kether", "Binah"],
+        "hebrewLetter": "Beth",
+        "hebrewScript": "\u05d1",
+        "letterMeaning": "House",
+        "tarotCard": "The Magician (I)",
+        "attribution": "Mercury",
+        "queenScaleColor": "Purple",
+        "colorHex": "#800080"
+      },
+      {
+        "pathNumber": 13,
+        "connects": [1, 6],
+        "connectsNames": ["Kether", "Tiphareth"],
+        "hebrewLetter": "Gimel",
+        "hebrewScript": "\u05d2",
+        "letterMeaning": "Camel",
+        "tarotCard": "The High Priestess (II)",
+        "attribution": "Moon",
+        "queenScaleColor": "Silver",
+        "colorHex": "#C0C0C0"
+      },
+      {
+        "pathNumber": 14,
+        "connects": [2, 3],
+        "connectsNames": ["Chokmah", "Binah"],
+        "hebrewLetter": "Daleth",
+        "hebrewScript": "\u05d3",
+        "letterMeaning": "Door",
+        "tarotCard": "The Empress (III)",
+        "attribution": "Venus",
+        "queenScaleColor": "Sky Blue",
+        "colorHex": "#87CEEB"
+      },
+      {
+        "pathNumber": 15,
+        "connects": [2, 6],
+        "connectsNames": ["Chokmah", "Tiphareth"],
+        "hebrewLetter": "Heh",
+        "hebrewScript": "\u05d4",
+        "letterMeaning": "Window",
+        "tarotCard": "The Emperor (IV)",
+        "attribution": "Aries",
+        "queenScaleColor": "Red",
+        "colorHex": "#FF0000"
+      },
+      {
+        "pathNumber": 16,
+        "connects": [2, 4],
+        "connectsNames": ["Chokmah", "Chesed"],
+        "hebrewLetter": "Vav",
+        "hebrewScript": "\u05d5",
+        "letterMeaning": "Nail/Hook",
+        "tarotCard": "The Hierophant (V)",
+        "attribution": "Taurus",
+        "queenScaleColor": "Deep Indigo",
+        "colorHex": "#310062"
+      },
+      {
+        "pathNumber": 17,
+        "connects": [3, 6],
+        "connectsNames": ["Binah", "Tiphareth"],
+        "hebrewLetter": "Zayin",
+        "hebrewScript": "\u05d6",
+        "letterMeaning": "Sword",
+        "tarotCard": "The Lovers (VI)",
+        "attribution": "Gemini",
+        "queenScaleColor": "Pale Mauve",
+        "colorHex": "#C9A0DC"
+      },
+      {
+        "pathNumber": 18,
+        "connects": [3, 5],
+        "connectsNames": ["Binah", "Geburah"],
+        "hebrewLetter": "Cheth",
+        "hebrewScript": "\u05d7",
+        "letterMeaning": "Fence",
+        "tarotCard": "The Chariot (VII)",
+        "attribution": "Cancer",
+        "queenScaleColor": "Maroon",
+        "colorHex": "#800000"
+      },
+      {
+        "pathNumber": 19,
+        "connects": [4, 5],
+        "connectsNames": ["Chesed", "Geburah"],
+        "hebrewLetter": "Teth",
+        "hebrewScript": "\u05d8",
+        "letterMeaning": "Serpent",
+        "tarotCard": "Strength (VIII)",
+        "attribution": "Leo",
+        "queenScaleColor": "Deep Purple",
+        "colorHex": "#4B0082"
+      },
+      {
+        "pathNumber": 20,
+        "connects": [4, 6],
+        "connectsNames": ["Chesed", "Tiphareth"],
+        "hebrewLetter": "Yod",
+        "hebrewScript": "\u05d9",
+        "letterMeaning": "Hand",
+        "tarotCard": "The Hermit (IX)",
+        "attribution": "Virgo",
+        "queenScaleColor": "Slate Grey",
+        "colorHex": "#708090"
+      },
+      {
+        "pathNumber": 21,
+        "connects": [4, 7],
+        "connectsNames": ["Chesed", "Netzach"],
+        "hebrewLetter": "Kaph",
+        "hebrewScript": "\u05db",
+        "letterMeaning": "Palm of Hand",
+        "tarotCard": "Wheel of Fortune (X)",
+        "attribution": "Jupiter",
+        "queenScaleColor": "Blue",
+        "colorHex": "#0000FF"
+      },
+      {
+        "pathNumber": 22,
+        "connects": [5, 6],
+        "connectsNames": ["Geburah", "Tiphareth"],
+        "hebrewLetter": "Lamed",
+        "hebrewScript": "\u05dc",
+        "letterMeaning": "Ox Goad",
+        "tarotCard": "Justice (XI)",
+        "attribution": "Libra",
+        "queenScaleColor": "Blue",
+        "colorHex": "#0000FF"
+      },
+      {
+        "pathNumber": 23,
+        "connects": [5, 8],
+        "connectsNames": ["Geburah", "Hod"],
+        "hebrewLetter": "Mem",
+        "hebrewScript": "\u05de",
+        "letterMeaning": "Water",
+        "tarotCard": "The Hanged Man (XII)",
+        "attribution": "Water",
+        "queenScaleColor": "Sea Green",
+        "colorHex": "#2E8B57"
+      },
+      {
+        "pathNumber": 24,
+        "connects": [6, 7],
+        "connectsNames": ["Tiphareth", "Netzach"],
+        "hebrewLetter": "Nun",
+        "hebrewScript": "\u05e0",
+        "letterMeaning": "Fish",
+        "tarotCard": "Death (XIII)",
+        "attribution": "Scorpio",
+        "queenScaleColor": "Dull Brown",
+        "colorHex": "#8B7355"
+      },
+      {
+        "pathNumber": 25,
+        "connects": [6, 9],
+        "connectsNames": ["Tiphareth", "Yesod"],
+        "hebrewLetter": "Samekh",
+        "hebrewScript": "\u05e1",
+        "letterMeaning": "Prop/Support",
+        "tarotCard": "Temperance (XIV)",
+        "attribution": "Sagittarius",
+        "queenScaleColor": "Yellow",
+        "colorHex": "#FFD700"
+      },
+      {
+        "pathNumber": 26,
+        "connects": [6, 8],
+        "connectsNames": ["Tiphareth", "Hod"],
+        "hebrewLetter": "Ayin",
+        "hebrewScript": "\u05e2",
+        "letterMeaning": "Eye",
+        "tarotCard": "The Devil (XV)",
+        "attribution": "Capricorn",
+        "queenScaleColor": "Black",
+        "colorHex": "#000000"
+      },
+      {
+        "pathNumber": 27,
+        "connects": [7, 8],
+        "connectsNames": ["Netzach", "Hod"],
+        "hebrewLetter": "Peh",
+        "hebrewScript": "\u05e4",
+        "letterMeaning": "Mouth",
+        "tarotCard": "The Tower (XVI)",
+        "attribution": "Mars",
+        "queenScaleColor": "Red",
+        "colorHex": "#FF0000"
+      },
+      {
+        "pathNumber": 28,
+        "connects": [7, 9],
+        "connectsNames": ["Netzach", "Yesod"],
+        "hebrewLetter": "Tzaddi",
+        "hebrewScript": "\u05e6",
+        "letterMeaning": "Fishhook",
+        "tarotCard": "The Star (XVII)",
+        "attribution": "Aquarius",
+        "queenScaleColor": "Sky Blue",
+        "colorHex": "#87CEEB"
+      },
+      {
+        "pathNumber": 29,
+        "connects": [7, 10],
+        "connectsNames": ["Netzach", "Malkuth"],
+        "hebrewLetter": "Qoph",
+        "hebrewScript": "\u05e7",
+        "letterMeaning": "Back of Head",
+        "tarotCard": "The Moon (XVIII)",
+        "attribution": "Pisces",
+        "queenScaleColor": "Buff flecked Silver-White",
+        "colorHex": "#F0DC82"
+      },
+      {
+        "pathNumber": 30,
+        "connects": [8, 9],
+        "connectsNames": ["Hod", "Yesod"],
+        "hebrewLetter": "Resh",
+        "hebrewScript": "\u05e8",
+        "letterMeaning": "Head/Face",
+        "tarotCard": "The Sun (XIX)",
+        "attribution": "Sun",
+        "queenScaleColor": "Gold Yellow",
+        "colorHex": "#FFD700"
+      },
+      {
+        "pathNumber": 31,
+        "connects": [8, 10],
+        "connectsNames": ["Hod", "Malkuth"],
+        "hebrewLetter": "Shin",
+        "hebrewScript": "\u05e9",
+        "letterMeaning": "Tooth",
+        "tarotCard": "Judgement (XX)",
+        "attribution": "Fire",
+        "queenScaleColor": "Vermilion",
+        "colorHex": "#E34234"
+      },
+      {
+        "pathNumber": 32,
+        "connects": [9, 10],
+        "connectsNames": ["Yesod", "Malkuth"],
+        "hebrewLetter": "Tav",
+        "hebrewScript": "\u05ea",
+        "letterMeaning": "Cross/Mark",
+        "tarotCard": "The World (XXI)",
+        "attribution": "Saturn",
+        "queenScaleColor": "Black",
+        "colorHex": "#000000"
+      }
+    ]
+  },
+
+  "daat": {
+    "nameHebrew": "Da'at",
+    "hebrewScript": "\u05d3\u05e2\u05ea",
+    "nameEnglish": "Knowledge",
+    "number": "Hidden (unnumbered, sometimes called the 11th)",
+    "position": { "x": 0, "y": 2.5, "z": 0 },
+    "description": "The hidden or invisible sephira. Not counted among the ten Sephiroth. It sits on the Middle Pillar directly above Tiphareth, acting as the gateway between the Supernal Triad (Kether, Chokmah, Binah) and the lower seven sephiroth.",
+    "color": "Lavender-Grey (translucent/invisible in many traditions)",
+    "colorHex": "#B4A7C7",
+    "opacity": 0.5,
+
+    "roles": {
+      "bridge": "Da'at bridges the Abyss, allowing divine influx from the Supernal Triad to flow downward to the lower sephiroth. It is the point where Chokmah (Wisdom) and Binah (Understanding) unite to produce Knowledge.",
+      "abyss": "The Abyss is the great gulf separating the three Supernal sephiroth from the seven lower ones. Da'at marks this boundary. Crossing the Abyss is described as a profound spiritual trial, a dark night of the soul requiring dissolution of the ego.",
+      "gateway": "Da'at is simultaneously a veil and a gateway, a separation and a connection. It serves as the primary portal between the Tree of Life and the Tree of Death. The backside of the Tree of Life can only be accessed through the gateway of Da'at.",
+      "membrane": "Da'at functions not as a door but as a fluctuating membrane through which one may or may not be permitted to pass. It is the thin boundary between the manifest sephiroth and the unmanifest/shadow realms.",
+      "mirror": "Da'at acts as a mirror reflecting divine consciousness into human awareness, the space where idea and reality intersect."
+    },
+
+    "choronzon": {
+      "name": "Choronzon (333)",
+      "role": "The Demon of the Abyss, lord of the Qliphothic domains, guardian and chief initiator of the gateway at Da'at. Known as the Dweller in the Abyss who disperses consciousness into chaos. Must be confronted when crossing the Abyss."
+    },
+
+    "geometricRelationships": {
+      "aboveTriangle": "Forms the apex of a downward-pointing triangle with Chesed and Geburah",
+      "belowTriangle": "Forms the nadir of an upward-pointing triangle with Chokmah and Binah",
+      "centerColumn": "Sits on the Middle Pillar between Kether (y=4) and Tiphareth (y=2)"
+    }
+  },
+
+  "treeOfDeath": {
+    "name": "Qliphoth (Tree of Death / Tree of Shells)",
+    "description": "The shadow or reverse side of the Tree of Life. The Qliphoth (Hebrew: shells, husks, peels) represent the remnants of the shattered vessels that failed to contain divine light during creation. Each Qlipha is the dark mirror of its corresponding Sephira. The Tree of Death is accessed through Da'at and extends downward/behind as an inverted reflection.",
+
+    "mirrorNote": "In 3D visualization, the Tree of Death can be positioned as: (A) an inverted reflection below the Tree of Life, sharing Malkuth/Lilith as the junction point, (B) behind the Tree of Life on the negative Z-axis, accessed through Da'at, or (C) both inverted AND behind, creating a diagonal shadow. The positions below use the 'inverted below' model with negative Y values.",
+
+    "qliphoth": [
+      {
+        "number": 1,
+        "nameTransliterated": "Thaumiel",
+        "nameEnglish": "The Twins of God / The Dual Contending Forces",
+        "mirrorsSephira": "Kether (1)",
+        "position": { "x": 0, "y": -4, "z": 0 },
+        "positionBehind": { "x": 0, "y": 4, "z": -2 },
+        "darkColor": "Black shot with Sickly Grey",
+        "colorHex": "#1A1A2E",
+        "demonRuler": "Satan / Moloch",
+        "demonicForm": "Two giant heads with bat-like wings",
+        "energy": "Duality, division, spiritual pride. The splitting of divine unity into warring twin forces. Represents the ultimate corruption of the crown: ego claiming godhood.",
+        "planet": "Pluto / Anti-Neptune"
+      },
+      {
+        "number": 2,
+        "nameTransliterated": "Ghagiel (Ghogiel)",
+        "nameEnglish": "The Hinderers",
+        "mirrorsSephira": "Chokmah (2)",
+        "position": { "x": -1, "y": -3, "z": 0 },
+        "positionBehind": { "x": 1, "y": 3, "z": -2 },
+        "darkColor": "Black-Blue (Abyssal)",
+        "colorHex": "#0D0D3B",
+        "demonRuler": "Beelzebub / Belial",
+        "demonicForm": "Black evil giants with serpents entwined around them",
+        "energy": "Obstruction, confusion of wisdom, lies masquerading as truth. Deceptive noise that blocks the transmission of genuine insight.",
+        "planet": "Anti-Uranus"
+      },
+      {
+        "number": 3,
+        "nameTransliterated": "Satariel (Sathariel)",
+        "nameEnglish": "The Concealers / Concealment of God",
+        "mirrorsSephira": "Binah (3)",
+        "position": { "x": 1, "y": -3, "z": 0 },
+        "positionBehind": { "x": -1, "y": 3, "z": -2 },
+        "darkColor": "Dark Brown-Black (Veiled)",
+        "colorHex": "#1C0A00",
+        "demonRuler": "Lucifuge Rofocale",
+        "demonicForm": "Black veiled heads with horns, hideous eyes seen through the veil, followed by evil centaurs",
+        "energy": "Concealment, opacity, hidden understanding. Matter divorced from spiritual wisdom. The all-seeing eye turned inward into darkness.",
+        "planet": "Anti-Saturn"
+      },
+      {
+        "number": 4,
+        "nameTransliterated": "Gamchicoth (Gha'agsheblah)",
+        "nameEnglish": "The Devourers / The Smiters / Disturbers of All Things",
+        "mirrorsSephira": "Chesed (4)",
+        "position": { "x": -1, "y": -2, "z": 0 },
+        "positionBehind": { "x": 1, "y": 2, "z": -2 },
+        "darkColor": "Deep Toxic Blue",
+        "colorHex": "#000066",
+        "demonRuler": "Astaroth",
+        "demonicForm": "Black cat-headed giants",
+        "energy": "Devouring love, vampirism, smothering generosity that exhausts. Mercy perverted into consuming greed and ruthless sacrifice.",
+        "planet": "Anti-Jupiter"
+      },
+      {
+        "number": 5,
+        "nameTransliterated": "Golachab",
+        "nameEnglish": "The Burners with Fire / The Arsonists",
+        "mirrorsSephira": "Geburah (5)",
+        "position": { "x": 1, "y": -2, "z": 0 },
+        "positionBehind": { "x": -1, "y": 2, "z": -2 },
+        "darkColor": "Volcanic Red-Black",
+        "colorHex": "#660000",
+        "demonRuler": "Asmodeus",
+        "demonicForm": "Enormous black heads like erupting volcanoes",
+        "energy": "Unbridled wrath, destruction for destruction's sake. Severity without purpose, cruelty and volcanic uncontrolled anger.",
+        "planet": "Anti-Mars"
+      },
+      {
+        "number": 6,
+        "nameTransliterated": "Thagirion",
+        "nameEnglish": "The Disputers / The Hagglers / The Litigation",
+        "mirrorsSephira": "Tiphareth (6)",
+        "position": { "x": 0, "y": -2, "z": 0 },
+        "positionBehind": { "x": 0, "y": 2, "z": -2 },
+        "darkColor": "Black Sun (Anti-Gold)",
+        "colorHex": "#1A1A00",
+        "demonRuler": "Belphegor",
+        "demonicForm": "Great black giants constantly working against each other (Zomiel)",
+        "energy": "The Black Sun that radiates death instead of life. Ego death and painful conflict. Beauty perverted into vanity, harmony into discord.",
+        "planet": "Black Sun / Anti-Sol"
+      },
+      {
+        "number": 7,
+        "nameTransliterated": "A'arab Zaraq",
+        "nameEnglish": "The Ravens of Dispersion / The Corrosive Ones",
+        "mirrorsSephira": "Netzach (7)",
+        "position": { "x": -1, "y": -1, "z": 0 },
+        "positionBehind": { "x": 1, "y": 1, "z": -2 },
+        "darkColor": "Putrid Green-Black",
+        "colorHex": "#003300",
+        "demonRuler": "Baal / Tubal Cain",
+        "demonicForm": "Demon-headed ravens issuing from a volcano",
+        "energy": "Uncontrolled passion, scavenging desire, lust without wisdom. Victory perverted into hollow conquest and dispersed creative force.",
+        "planet": "Anti-Venus"
+      },
+      {
+        "number": 8,
+        "nameTransliterated": "Samael",
+        "nameEnglish": "The Poison of God / The Deceitful Ones",
+        "mirrorsSephira": "Hod (8)",
+        "position": { "x": 1, "y": -1, "z": 0 },
+        "positionBehind": { "x": -1, "y": 1, "z": -2 },
+        "darkColor": "Poison Orange-Brown",
+        "colorHex": "#663300",
+        "demonRuler": "Adrammelech",
+        "demonicForm": "Dull, demon-headed dog-like creatures",
+        "energy": "Intellectual poison, barren godless logic, deception, and beguilement. Splendor turned to cold illusion and mental fickleness.",
+        "planet": "Anti-Mercury"
+      },
+      {
+        "number": 9,
+        "nameTransliterated": "Gamaliel",
+        "nameEnglish": "The Obscene Ones",
+        "mirrorsSephira": "Yesod (9)",
+        "position": { "x": 0, "y": -0.5, "z": 0 },
+        "positionBehind": { "x": 0, "y": 0.5, "z": -2 },
+        "darkColor": "Corrupted Violet-Black (Dark Moon)",
+        "colorHex": "#1A0033",
+        "demonRuler": "Lilith (the Elder)",
+        "demonicForm": "Corrupted, obscene sexual forms",
+        "energy": "Pollution of the astral imagination, distorted fertility, dark dreams. The foundation perverted into the shadow of the subconscious, succubi and incubi.",
+        "planet": "Dark Moon / Anti-Luna"
+      },
+      {
+        "number": 10,
+        "nameTransliterated": "Lilith (Nahemoth)",
+        "nameEnglish": "Queen of the Night / The Whisperers",
+        "mirrorsSephira": "Malkuth (10)",
+        "position": { "x": 0, "y": 0, "z": 0 },
+        "positionBehind": { "x": 0, "y": 0, "z": -2 },
+        "darkColor": "Earthen Black (Charcoal-Brown)",
+        "colorHex": "#1A0A00",
+        "demonRuler": "Naamah",
+        "demonicForm": "Wild, carnal entities of primal chaos",
+        "energy": "Material world completely divorced from spirit. Materialism that obscures all divinity. The physical kingdom as prison rather than temple.",
+        "planet": "Anti-Earth"
+      }
+    ],
+
+    "tunnelsOfSet": {
+      "description": "The 22 Tunnels of Set are the shadow paths connecting the Qliphoth, corresponding inversely to the 22 paths of the Tree of Life. Named by Kenneth Grant in Nightside of Eden, each tunnel has a demonic sentinel and corresponds to the same Hebrew letter and Tarot card as its Tree of Life counterpart, but in their nightside/inverted aspect.",
+      "tunnels": [
+        {
+          "tunnelNumber": 11,
+          "name": "Amprodias",
+          "connectsQliphoth": [1, 2],
+          "connectsNames": ["Thaumiel", "Ghagiel"],
+          "hebrewLetter": "Aleph",
+          "tarotShadow": "The Fool (Reversed/Nightside)",
+          "mirrorsPath": 11
+        },
+        {
+          "tunnelNumber": 12,
+          "name": "Baratchial",
+          "connectsQliphoth": [1, 3],
+          "connectsNames": ["Thaumiel", "Satariel"],
+          "hebrewLetter": "Beth",
+          "tarotShadow": "The Magician (Reversed/Nightside)",
+          "mirrorsPath": 12
+        },
+        {
+          "tunnelNumber": 13,
+          "name": "Gargophias",
+          "connectsQliphoth": [1, 6],
+          "connectsNames": ["Thaumiel", "Thagirion"],
+          "hebrewLetter": "Gimel",
+          "tarotShadow": "The High Priestess (Reversed/Nightside)",
+          "mirrorsPath": 13
+        },
+        {
+          "tunnelNumber": 14,
+          "name": "Dagdagiel",
+          "connectsQliphoth": [2, 3],
+          "connectsNames": ["Ghagiel", "Satariel"],
+          "hebrewLetter": "Daleth",
+          "tarotShadow": "The Empress (Reversed/Nightside)",
+          "mirrorsPath": 14
+        },
+        {
+          "tunnelNumber": 15,
+          "name": "Hemethterith",
+          "connectsQliphoth": [2, 6],
+          "connectsNames": ["Ghagiel", "Thagirion"],
+          "hebrewLetter": "Heh",
+          "tarotShadow": "The Emperor (Reversed/Nightside)",
+          "mirrorsPath": 15
+        },
+        {
+          "tunnelNumber": 16,
+          "name": "Uriens",
+          "connectsQliphoth": [2, 4],
+          "connectsNames": ["Ghagiel", "Gamchicoth"],
+          "hebrewLetter": "Vav",
+          "tarotShadow": "The Hierophant (Reversed/Nightside)",
+          "mirrorsPath": 16
+        },
+        {
+          "tunnelNumber": 17,
+          "name": "Zamradiel",
+          "connectsQliphoth": [3, 6],
+          "connectsNames": ["Satariel", "Thagirion"],
+          "hebrewLetter": "Zayin",
+          "tarotShadow": "The Lovers (Reversed/Nightside)",
+          "mirrorsPath": 17
+        },
+        {
+          "tunnelNumber": 18,
+          "name": "Characith",
+          "connectsQliphoth": [3, 5],
+          "connectsNames": ["Satariel", "Golachab"],
+          "hebrewLetter": "Cheth",
+          "tarotShadow": "The Chariot (Reversed/Nightside)",
+          "mirrorsPath": 18
+        },
+        {
+          "tunnelNumber": 19,
+          "name": "Temphioth",
+          "connectsQliphoth": [4, 5],
+          "connectsNames": ["Gamchicoth", "Golachab"],
+          "hebrewLetter": "Teth",
+          "tarotShadow": "Strength (Reversed/Nightside)",
+          "mirrorsPath": 19
+        },
+        {
+          "tunnelNumber": 20,
+          "name": "Yamatu",
+          "connectsQliphoth": [4, 6],
+          "connectsNames": ["Gamchicoth", "Thagirion"],
+          "hebrewLetter": "Yod",
+          "tarotShadow": "The Hermit (Reversed/Nightside)",
+          "mirrorsPath": 20
+        },
+        {
+          "tunnelNumber": 21,
+          "name": "Kurgasiax",
+          "connectsQliphoth": [4, 7],
+          "connectsNames": ["Gamchicoth", "A'arab Zaraq"],
+          "hebrewLetter": "Kaph",
+          "tarotShadow": "Wheel of Fortune (Reversed/Nightside)",
+          "mirrorsPath": 21
+        },
+        {
+          "tunnelNumber": 22,
+          "name": "Lafcursiax",
+          "connectsQliphoth": [5, 6],
+          "connectsNames": ["Golachab", "Thagirion"],
+          "hebrewLetter": "Lamed",
+          "tarotShadow": "Justice (Reversed/Nightside)",
+          "mirrorsPath": 22
+        },
+        {
+          "tunnelNumber": 23,
+          "name": "Malkunofat",
+          "connectsQliphoth": [5, 8],
+          "connectsNames": ["Golachab", "Samael"],
+          "hebrewLetter": "Mem",
+          "tarotShadow": "The Hanged Man (Reversed/Nightside)",
+          "mirrorsPath": 23
+        },
+        {
+          "tunnelNumber": 24,
+          "name": "Niantiel",
+          "connectsQliphoth": [6, 7],
+          "connectsNames": ["Thagirion", "A'arab Zaraq"],
+          "hebrewLetter": "Nun",
+          "tarotShadow": "Death (Reversed/Nightside)",
+          "mirrorsPath": 24
+        },
+        {
+          "tunnelNumber": 25,
+          "name": "Saksaksalim",
+          "connectsQliphoth": [6, 9],
+          "connectsNames": ["Thagirion", "Gamaliel"],
+          "hebrewLetter": "Samekh",
+          "tarotShadow": "Temperance (Reversed/Nightside)",
+          "mirrorsPath": 25
+        },
+        {
+          "tunnelNumber": 26,
+          "name": "A'ano'nin",
+          "connectsQliphoth": [6, 8],
+          "connectsNames": ["Thagirion", "Samael"],
+          "hebrewLetter": "Ayin",
+          "tarotShadow": "The Devil (Reversed/Nightside)",
+          "mirrorsPath": 26
+        },
+        {
+          "tunnelNumber": 27,
+          "name": "Parfaxitas",
+          "connectsQliphoth": [7, 8],
+          "connectsNames": ["A'arab Zaraq", "Samael"],
+          "hebrewLetter": "Peh",
+          "tarotShadow": "The Tower (Reversed/Nightside)",
+          "mirrorsPath": 27
+        },
+        {
+          "tunnelNumber": 28,
+          "name": "Tzuflifu",
+          "connectsQliphoth": [7, 9],
+          "connectsNames": ["A'arab Zaraq", "Gamaliel"],
+          "hebrewLetter": "Tzaddi",
+          "tarotShadow": "The Star (Reversed/Nightside)",
+          "mirrorsPath": 28
+        },
+        {
+          "tunnelNumber": 29,
+          "name": "Qulielfi",
+          "connectsQliphoth": [7, 10],
+          "connectsNames": ["A'arab Zaraq", "Lilith-Nahemoth"],
+          "hebrewLetter": "Qoph",
+          "tarotShadow": "The Moon (Reversed/Nightside)",
+          "mirrorsPath": 29
+        },
+        {
+          "tunnelNumber": 30,
+          "name": "Raflifu",
+          "connectsQliphoth": [8, 9],
+          "connectsNames": ["Samael", "Gamaliel"],
+          "hebrewLetter": "Resh",
+          "tarotShadow": "The Sun (Reversed/Nightside)",
+          "mirrorsPath": 30
+        },
+        {
+          "tunnelNumber": 31,
+          "name": "Shalicu",
+          "connectsQliphoth": [8, 10],
+          "connectsNames": ["Samael", "Lilith-Nahemoth"],
+          "hebrewLetter": "Shin",
+          "tarotShadow": "Judgement (Reversed/Nightside)",
+          "mirrorsPath": 31
+        },
+        {
+          "tunnelNumber": 32,
+          "name": "Thantifaxath",
+          "connectsQliphoth": [9, 10],
+          "connectsNames": ["Gamaliel", "Lilith-Nahemoth"],
+          "hebrewLetter": "Tav",
+          "tarotShadow": "The World (Reversed/Nightside)",
+          "mirrorsPath": 32
+        }
+      ]
+    }
+  },
+
+  "theAbyss": {
+    "description": "The great gulf separating the Supernal Triad (Kether, Chokmah, Binah) from the seven lower Sephiroth. In 3D space, this can be visualized as a horizontal plane or membrane at y=2.5 (the Da'at level).",
+    "position": {
+      "yLevel": 2.5,
+      "extends": "Horizontally across all three pillars from x=-1.5 to x=+1.5"
+    },
+    "visualization": {
+      "suggestion": "Render as a semi-transparent horizontal plane, turbulent/foggy, with Da'at as a glowing point or portal at its center (x=0, y=2.5). The Abyss separates the upper triangle (Kether-Chokmah-Binah) from everything below.",
+      "forDualTree": "The Abyss also represents the membrane between the Tree of Life and Tree of Death. Da'at is the puncture point where one can pass from the front (Life) to the back (Death)."
+    }
+  },
+
+  "visualizationGuide": {
+    "treeOfLifeLayout": {
+      "description": "Standard 2D layout projected into 3D with Z=0 for the Tree of Life plane",
+      "nodePositions": {
+        "Kether":    { "x":  0, "y": 4.0, "z": 0 },
+        "Chokmah":   { "x":  1, "y": 3.0, "z": 0 },
+        "Binah":     { "x": -1, "y": 3.0, "z": 0 },
+        "Daat":      { "x":  0, "y": 2.5, "z": 0 },
+        "Chesed":    { "x":  1, "y": 2.0, "z": 0 },
+        "Geburah":   { "x": -1, "y": 2.0, "z": 0 },
+        "Tiphareth": { "x":  0, "y": 2.0, "z": 0 },
+        "Netzach":   { "x":  1, "y": 1.0, "z": 0 },
+        "Hod":       { "x": -1, "y": 1.0, "z": 0 },
+        "Yesod":     { "x":  0, "y": 0.5, "z": 0 },
+        "Malkuth":   { "x":  0, "y": 0.0, "z": 0 }
+      }
+    },
+
+    "treeOfDeathLayout_InvertedBelow": {
+      "description": "Tree of Death mirrored below the Tree of Life. Malkuth/Lilith share the same position at y=0. The Qliphoth extend downward with negative Y values. Note: pillar assignments are reversed (left becomes right).",
+      "nodePositions": {
+        "Thaumiel":       { "x":  0, "y": -4.0, "z": 0 },
+        "Ghagiel":        { "x": -1, "y": -3.0, "z": 0 },
+        "Satariel":       { "x":  1, "y": -3.0, "z": 0 },
+        "Gamchicoth":     { "x": -1, "y": -2.0, "z": 0 },
+        "Golachab":       { "x":  1, "y": -2.0, "z": 0 },
+        "Thagirion":      { "x":  0, "y": -2.0, "z": 0 },
+        "AarabZaraq":     { "x": -1, "y": -1.0, "z": 0 },
+        "Samael":         { "x":  1, "y": -1.0, "z": 0 },
+        "Gamaliel":       { "x":  0, "y": -0.5, "z": 0 },
+        "LilithNahemoth": { "x":  0, "y":  0.0, "z": 0 }
+      }
+    },
+
+    "treeOfDeathLayout_Behind": {
+      "description": "Tree of Death positioned behind the Tree of Life on the Z-axis, accessed through Da'at. Same Y positions as Tree of Life but at Z=-2. Pillar assignments are mirrored (left-right swapped when viewed from behind).",
+      "nodePositions": {
+        "Thaumiel":       { "x":  0, "y": 4.0, "z": -2 },
+        "Ghagiel":        { "x":  1, "y": 3.0, "z": -2 },
+        "Satariel":       { "x": -1, "y": 3.0, "z": -2 },
+        "Gamchicoth":     { "x":  1, "y": 2.0, "z": -2 },
+        "Golachab":       { "x": -1, "y": 2.0, "z": -2 },
+        "Thagirion":      { "x":  0, "y": 2.0, "z": -2 },
+        "AarabZaraq":     { "x":  1, "y": 1.0, "z": -2 },
+        "Samael":         { "x": -1, "y": 1.0, "z": -2 },
+        "Gamaliel":       { "x":  0, "y": 0.5, "z": -2 },
+        "LilithNahemoth": { "x":  0, "y": 0.0, "z": -2 }
+      }
+    },
+
+    "connectionBetweenTrees": {
+      "primaryGateway": {
+        "description": "Da'at serves as the portal connecting both trees. In the 'behind' layout, Da'at at (0, 2.5, 0) connects to the shadow-Da'at at (0, 2.5, -2), forming a tunnel through the Abyss.",
+        "from": { "x": 0, "y": 2.5, "z": 0 },
+        "to": { "x": 0, "y": 2.5, "z": -2 }
+      },
+      "sharedNode": {
+        "description": "In the 'inverted below' layout, Malkuth and Lilith-Nahemoth share position (0, 0, 0) as the junction point between the two trees.",
+        "position": { "x": 0, "y": 0, "z": 0 }
+      }
+    },
+
+    "scaleRecommendations": {
+      "unitScale": "Each unit in the coordinate system can represent 1 meter or any consistent unit in your 3D engine",
+      "sphereRadius": 0.15,
+      "pathWidth": 0.02,
+      "abyssThickness": 0.1,
+      "totalTreeHeight": 4.0,
+      "totalDualTreeHeight": 8.0,
+      "pillarSpacing": 2.0
+    }
+  }
+}
