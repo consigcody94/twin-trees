@@ -74,10 +74,10 @@ import {UnrealBloomPass} from 'three/addons/postprocessing/UnrealBloomPass.js';
 
 const PI=Math.PI, TAU=PI*2;
 const S3=Math.sqrt(3)/2; // sacred Flower of Life spacing
-const SC=2.8;
+const SC=4.2; // Bigger spread — easier to navigate and see individual nodes
 // Pancake layout: trees are FLAT horizontal planes stacked with space between
-const LIFE_H = 5;   // Tree of Life plane height (top pancake)
-const DEATH_H = -5;  // Tree of Death plane height (bottom pancake)
+const LIFE_H = 8;   // Tree of Life plane height (top pancake) — more space between trees
+const DEATH_H = -8;  // Tree of Death plane height (bottom pancake)
 const DAAT_H = 0;    // Central Da'at between the two planes
 const LY=LIFE_H, DY=DEATH_H; // compat aliases
 const daatXZ = -2.5*SC; // Da'at: below Chokmah/Binah(y=3), above Chesed/Geburah(y=2) — in the Abyss
@@ -100,8 +100,8 @@ scene.background = new THREE.Color(0x030308);
 
 const camera = new THREE.PerspectiveCamera(isMobile?65:55, innerWidth/innerHeight, 0.1, 500);
 // Angled view to see both stacked planes from the side
-camera.position.set(20, 12, 15);
-camera.lookAt(0, 0, -5);
+camera.position.set(30, 18, 22);
+camera.lookAt(0, 0, -7);
 
 const renderer = new THREE.WebGLRenderer({antialias:!isLowEnd, powerPreference:isMobile?'default':'high-performance'});
 renderer.setSize(innerWidth, innerHeight);
@@ -113,8 +113,8 @@ document.body.prepend(renderer.domElement);
 
 const ctrl = new OrbitControls(camera, renderer.domElement);
 ctrl.enableDamping=true; ctrl.dampingFactor=.08;
-ctrl.minDistance=1; ctrl.maxDistance=120;
-ctrl.target.set(0, 0, -5); // Look at center of the tree layout
+ctrl.minDistance=1; ctrl.maxDistance=200;
+ctrl.target.set(0, 0, -7); // Look at center of the tree layout
 ctrl.enablePan=true;
 ctrl.panSpeed=.8;
 ctrl.rotateSpeed=.7;
@@ -162,7 +162,7 @@ G.sacred.visible=false;
 let viewMode = '3d';
 const allGroups = [G.life, G.death, G.daat, G.flash, G.sacred];
 // Camera transition state
-let camTarget = {x:20, y:12, z:15};
+let camTarget = {x:30, y:18, z:22};
 let camTransitionT = 0; // 0 = done transitioning, >0 = still moving
 let camTransitionFrom = {x:20, y:12, z:15};
 let lookTarget = {x:0, y:0, z:-5};
@@ -356,64 +356,117 @@ function addLabel(text, pos, color, opacity, fontSize, group, dx, dy){
 }
 
 // ═══ PATHS — Tree of Life (golden) ═══
-// Procedural bark texture for branches
-function makeBarkTexture(baseColor, isDeath){
-  const cv=document.createElement('canvas'); cv.width=128; cv.height=32;
+// HQ Procedural bark texture + bump map for branches
+function makeBarkTextures(baseColor, isDeath){
+  const W=512, H=64; // high-res for sharp detail
+  const cv=document.createElement('canvas'); cv.width=W; cv.height=H;
   const cx=cv.getContext('2d');
   const c=new THREE.Color(baseColor);
-  // Base bark color
-  cx.fillStyle=isDeath?`rgb(${c.r*180|0},${c.g*120|0},${c.b*120|0})`:`rgb(${c.r*200|0},${c.g*180|0},${c.b*140|0})`;
-  cx.fillRect(0,0,128,32);
-  // Bark grain lines — longitudinal streaks
-  for(let i=0;i<60;i++){
-    const y=Math.random()*32;
-    const w=Math.random()*80+20;
-    const x=Math.random()*128;
-    cx.strokeStyle=`rgba(${isDeath?'40,10,10':'80,60,30'},${.15+Math.random()*.2})`;
-    cx.lineWidth=.5+Math.random()*1.5;
-    cx.beginPath(); cx.moveTo(x,y); cx.lineTo(x+w,y+Math.random()*4-2); cx.stroke();
+
+  // Base bark color — richer, more saturated
+  const br=isDeath?c.r*220|0:c.r*240|0, bg=isDeath?c.g*140|0:c.g*200|0, bb=isDeath?c.b*140|0:c.b*160|0;
+  cx.fillStyle=`rgb(${br},${bg},${bb})`;
+  cx.fillRect(0,0,W,H);
+
+  // Bark grain — many fine longitudinal fibers
+  for(let i=0;i<200;i++){
+    const y=Math.random()*H;
+    const w=40+Math.random()*200;
+    const x=Math.random()*W;
+    cx.strokeStyle=`rgba(${isDeath?'60,15,15':'100,70,35'},${.08+Math.random()*.15})`;
+    cx.lineWidth=.3+Math.random()*2;
+    cx.beginPath(); cx.moveTo(x,y);
+    // Slightly curved grain for realism
+    cx.quadraticCurveTo(x+w*.5, y+Math.random()*6-3, x+w, y+Math.random()*4-2);
+    cx.stroke();
   }
-  // Knots and dark spots
-  for(let i=0;i<8;i++){
-    cx.fillStyle=`rgba(${isDeath?'20,5,5':'40,25,10'},${.1+Math.random()*.15})`;
-    cx.beginPath(); cx.arc(Math.random()*128,Math.random()*32,1+Math.random()*3,0,Math.PI*2); cx.fill();
+
+  // Deep bark furrows — thicker dark lines
+  for(let i=0;i<30;i++){
+    const y=Math.random()*H;
+    cx.strokeStyle=`rgba(${isDeath?'15,3,3':'30,15,5'},${.2+Math.random()*.2})`;
+    cx.lineWidth=1+Math.random()*3;
+    cx.beginPath();
+    cx.moveTo(0,y);
+    for(let x=0;x<W;x+=20){
+      cx.lineTo(x, y+Math.sin(x*.05)*3+Math.random()*2-1);
+    }
+    cx.stroke();
   }
-  const tex=new THREE.CanvasTexture(cv);
-  tex.wrapS=tex.wrapT=THREE.RepeatWrapping;
-  tex.repeat.set(3,1);
-  return tex;
+
+  // Knots, whorls, and lichen spots
+  for(let i=0;i<15;i++){
+    const kx=Math.random()*W, ky=Math.random()*H, kr=2+Math.random()*5;
+    cx.fillStyle=`rgba(${isDeath?'25,8,8':'50,30,12'},${.12+Math.random()*.15})`;
+    cx.beginPath(); cx.ellipse(kx,ky,kr,kr*.6,Math.random()*PI,0,PI*2); cx.fill();
+    // Ring around knot
+    cx.strokeStyle=`rgba(${isDeath?'40,12,12':'70,40,20'},${.1})`;
+    cx.lineWidth=.5;
+    cx.beginPath(); cx.ellipse(kx,ky,kr+2,kr*.6+1,Math.random()*PI,0,PI*2); cx.stroke();
+  }
+
+  // Lighter highlights on bark ridges
+  for(let i=0;i<40;i++){
+    const y=Math.random()*H;
+    cx.strokeStyle=`rgba(${isDeath?'80,40,40':'160,130,80'},${.05+Math.random()*.08})`;
+    cx.lineWidth=.5+Math.random();
+    cx.beginPath(); cx.moveTo(Math.random()*W, y); cx.lineTo(Math.random()*W, y+Math.random()*2); cx.stroke();
+  }
+
+  const colorTex=new THREE.CanvasTexture(cv);
+  colorTex.wrapS=colorTex.wrapT=THREE.RepeatWrapping;
+  colorTex.repeat.set(4,1);
+  colorTex.anisotropy=renderer.capabilities.getMaxAnisotropy();
+
+  // Generate bump map from the bark texture — darker = lower
+  const bmpCv=document.createElement('canvas'); bmpCv.width=W; bmpCv.height=H;
+  const bx=bmpCv.getContext('2d');
+  bx.drawImage(cv,0,0);
+  const imgData=bx.getImageData(0,0,W,H);
+  const d=imgData.data;
+  for(let i=0;i<d.length;i+=4){
+    // Convert to grayscale for bump height
+    const gray=(d[i]*.3+d[i+1]*.59+d[i+2]*.11)|0;
+    d[i]=d[i+1]=d[i+2]=gray;
+  }
+  bx.putImageData(imgData,0,0);
+  const bumpTex=new THREE.CanvasTexture(bmpCv);
+  bumpTex.wrapS=bumpTex.wrapT=THREE.RepeatWrapping;
+  bumpTex.repeat.set(4,1);
+  bumpTex.anisotropy=renderer.capabilities.getMaxAnisotropy();
+
+  return {colorTex, bumpTex};
 }
 
 function buildPath(a,b,color,opacity,group,emissive){
   const isDeath=group===G.death;
   const pts=[];
-  // Organic curve — slight wobble like a real branch
-  for(let i=0;i<=40;i++){
-    const t=i/40;
+  // Organic curve — natural branch wobble
+  const seed=a.x*7+b.z*13; // deterministic wobble per path
+  for(let i=0;i<=60;i++){
+    const t=i/60;
     const p=new THREE.Vector3().lerpVectors(a,b,t);
-    p.z+=Math.sin(t*PI)*.12;
-    // Add slight organic wobble
-    p.x+=Math.sin(t*PI*3)*.015;
-    p.y+=Math.cos(t*PI*2.5)*.01;
+    p.z+=Math.sin(t*PI)*.15;
+    // Organic irregularity — branches aren't perfectly straight
+    p.x+=Math.sin(t*PI*3+seed)*.03;
+    p.y+=Math.cos(t*PI*2.5+seed*.7)*.02;
+    p.z+=Math.sin(t*PI*5+seed*1.3)*.01;
     pts.push(p);
   }
   const curve=new THREE.CatmullRomCurve3(pts);
-  // Variable-width branch — thicker in middle, thinner at ends
-  const radii=[];
-  for(let i=0;i<=30;i++){
-    const t=i/30;
-    radii.push(.06+Math.sin(t*PI)*.07); // .06 at ends, .13 at center
-  }
-  const geo=new THREE.TubeGeometry(curve,30,.1,8,false);
-  // Bark-textured branch material
-  const barkTex=makeBarkTexture(color,isDeath);
+  // Thicker tube — .15 radius (was .1), more segments for smoothness
+  const geo=new THREE.TubeGeometry(curve,48,.15,12,false);
+  // HQ bark material with bump mapping
+  const {colorTex, bumpTex}=makeBarkTextures(color,isDeath);
   const mat=new THREE.MeshStandardMaterial({
     color, emissive: emissive||color,
-    emissiveIntensity:.25,
-    map:barkTex,
+    emissiveIntensity: isDeath?.15:.2,
+    map:colorTex,
+    bumpMap:bumpTex,
+    bumpScale:.08,  // subtle 3D surface detail
     transparent:true, opacity,
-    roughness:.7, metalness:.05,
-    envMap, envMapIntensity:.15,
+    roughness:.75, metalness:.02,
+    envMap, envMapIntensity:.1,
   });
   const mesh=new THREE.Mesh(geo,mat);
   group.add(mesh);
@@ -455,10 +508,25 @@ pathData.forEach((pd,i)=>{
   const pa=dp(qa), pb=dp(qb);
   deathPathMeshes.push(buildPath(pa,pb,0x661515,.6,G.death,0x441010));
 
-  // Tunnel of Set label
+  // Full path label — Hebrew letter + name (matching Life tree)
   const mid=new THREE.Vector3().lerpVectors(pa,pb,.5);
   mid.z+=.3;
-  addLabel(pd.hb, mid, new THREE.Color(0x664444), .3, 9, G.death, 0, 0);
+  addLabel(`${pd.hb} ${pd.letter}`, mid, new THREE.Color(0x884444), .4, 9, G.death, 0, 0);
+
+  // Clickable hit target for Death path info
+  const hitGeo=new THREE.SphereGeometry(.3,8,8);
+  const hitMat=new THREE.MeshBasicMaterial({visible:false});
+  const hitMesh=new THREE.Mesh(hitGeo,hitMat);
+  hitMesh.position.copy(mid);
+  hitMesh.userData={type:'path',data:{
+    n:`Tunnel ${i+11}: ${pd.letter}`,
+    hb:pd.hb,
+    en:`${pd.mean} — ${pd.tarot} (Reversed)`,
+    d:`The ${pd.letter} tunnel (${pd.hb}, "${pd.mean}") connects ${qa.n} to ${qb.n}. Shadow of the ${pd.tarot} — the ${pd.attr} path inverted through the Qliphoth.`,
+    pl:pd.attr, ar:`${pd.tarot} (Shadow)`, gn:`${qa.n} ↔ ${qb.n}`, dm:''
+  }};
+  G.death.add(hitMesh);
+  allHit.push(hitMesh);
 });
 
 // ═══ LIGHTNING FLASH ═══
@@ -777,9 +845,9 @@ document.querySelectorAll('.tb').forEach(btn=>{
       viewMode=modes[(modes.indexOf(viewMode)+1)%3];
       btn.textContent=labels[modes.indexOf(viewMode)];
       camTransitionFrom={x:camera.position.x, y:camera.position.y, z:camera.position.z};
-      if(viewMode==='3d')   { camTarget={x:20,y:12,z:15}; }
-      if(viewMode==='top')  { camTarget={x:0,y:28,z:-4.5}; }
-      if(viewMode==='side') { camTarget={x:28,y:0,z:-5}; }
+      if(viewMode==='3d')   { camTarget={x:30,y:18,z:22}; }
+      if(viewMode==='top')  { camTarget={x:0,y:40,z:-7}; }
+      if(viewMode==='side') { camTarget={x:40,y:0,z:-7}; }
       camTransitionT=1; // start a one-shot transition
       return;
     }
@@ -824,10 +892,10 @@ document.addEventListener('click',()=>{
 let introT=0;
 const introDur=6;
 const introPath=new THREE.CatmullRomCurve3([
-  new THREE.Vector3(0,25,30),
-  new THREE.Vector3(12,18,22),
-  new THREE.Vector3(20,14,18),
-  new THREE.Vector3(20,12,15),
+  new THREE.Vector3(0,35,40),
+  new THREE.Vector3(15,25,32),
+  new THREE.Vector3(25,20,26),
+  new THREE.Vector3(30,18,22),
 ],false,'catmullrom',.5);
 
 // ═══ ORBITING PARTICLES per sephira/qlipha ═══
@@ -972,7 +1040,7 @@ function animate(){
     const e=1-Math.pow(1-introT,3);
     const pos=introPath.getPoint(e);
     camera.position.copy(pos);
-    camera.lookAt(0, 0, -5);
+    camera.lookAt(0, 0, -7);
   } else {
     ctrl.update();
   }
