@@ -12,6 +12,10 @@
 
 ---
 
+![The Twin Trees — Both trees with Da'at Abyss between them](screenshots/hero.png)
+
+---
+
 </div>
 
 ```

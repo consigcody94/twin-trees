@@ -107,13 +107,18 @@ const renderer = new THREE.WebGLRenderer({antialias:!isLowEnd, powerPreference:i
 renderer.setSize(innerWidth, innerHeight);
 renderer.setPixelRatio(Math.min(devicePixelRatio, isMobile?1.5:2));
 renderer.toneMapping = THREE.ACESFilmicToneMapping;
-renderer.toneMappingExposure = 1.3;
+renderer.toneMappingExposure = 1.4;
+renderer.outputColorSpace = THREE.SRGBColorSpace;
 document.body.prepend(renderer.domElement);
 
 const ctrl = new OrbitControls(camera, renderer.domElement);
-ctrl.enableDamping=true; ctrl.dampingFactor=.04;
-ctrl.minDistance=5; ctrl.maxDistance=60;
+ctrl.enableDamping=true; ctrl.dampingFactor=.08;
+ctrl.minDistance=1; ctrl.maxDistance=120;
 ctrl.target.set(0, 0, -5); // Look at center of the tree layout
+ctrl.enablePan=true;
+ctrl.panSpeed=.8;
+ctrl.rotateSpeed=.7;
+ctrl.zoomSpeed=1.2;
 // Mobile touch: enable touch rotate/zoom, prevent page scroll
 ctrl.touches={ONE:THREE.TOUCH.ROTATE, TWO:THREE.TOUCH.DOLLY_PAN};
 
@@ -156,8 +161,10 @@ G.sacred.visible=false;
 // View mode: "3d" (angled, both planes visible) or "top" (looking straight down at life) or "side" (profile view)
 let viewMode = '3d';
 const allGroups = [G.life, G.death, G.daat, G.flash, G.sacred];
-// Camera targets for smooth lerp
+// Camera transition state
 let camTarget = {x:20, y:12, z:15};
+let camTransitionT = 0; // 0 = done transitioning, >0 = still moving
+let camTransitionFrom = {x:20, y:12, z:15};
 let lookTarget = {x:0, y:0, z:-5};
 
 // ═══ DATA ═══
@@ -221,6 +228,30 @@ const flashSeq=[1,2,3,4,5,6,7,8,9,10]; // Lightning Flash order
 const lp=s=>new THREE.Vector3(s.x*SC, LIFE_H, -s.y*SC);
 const dp=q=>new THREE.Vector3(q.x*SC, DEATH_H, q.y*SC);
 
+// ═══ PROCEDURAL ENVIRONMENT MAP (for reflections) ═══
+const pmremGen = new THREE.PMREMGenerator(renderer);
+pmremGen.compileEquirectangularShader();
+// Create a small gradient environment scene for reflections
+const envScene = new THREE.Scene();
+const envGeo = new THREE.SphereGeometry(50,16,16);
+const envMat = new THREE.MeshBasicMaterial({side:THREE.BackSide});
+// Gradient from deep space to warm gold
+const envCv = document.createElement('canvas'); envCv.width=256; envCv.height=128;
+const ectx = envCv.getContext('2d');
+const grd = ectx.createLinearGradient(0,0,0,128);
+grd.addColorStop(0,'#0a0520'); grd.addColorStop(.3,'#1a0a30');
+grd.addColorStop(.5,'#2a1540'); grd.addColorStop(.7,'#3a2010'); grd.addColorStop(1,'#1a0a05');
+ectx.fillStyle=grd; ectx.fillRect(0,0,256,128);
+// Add some fake star specks
+for(let i=0;i<80;i++){
+  ectx.fillStyle=`rgba(255,${200+Math.random()*55|0},${150+Math.random()*100|0},${.2+Math.random()*.5})`;
+  ectx.fillRect(Math.random()*256|0,Math.random()*128|0,1,1);
+}
+envMat.map=new THREE.CanvasTexture(envCv);
+envScene.add(new THREE.Mesh(envGeo,envMat));
+const envMap = pmremGen.fromScene(envScene,.04).texture;
+pmremGen.dispose();
+
 // ═══ BUILD SEPHIROTH ═══
 const lifeMeshes=[], allHit=[];
 const sphGeo=new THREE.SphereGeometry(.9,GEO_DETAIL,GEO_DETAIL);
@@ -230,14 +261,25 @@ const sphGeoCore=new THREE.SphereGeometry(.35,Math.max(12,GEO_DETAIL/2),Math.max
 seph.forEach((s,i)=>{
   const col=new THREE.Color(s.c);
 
-  // Outer glow sphere
-  const outerMat=new THREE.MeshBasicMaterial({color:col,transparent:true,opacity:.12,side:THREE.BackSide,depthWrite:false});
+  // Outer glow sphere — soft halo
+  const outerMat=new THREE.MeshBasicMaterial({color:col,transparent:true,opacity:.15,side:THREE.BackSide,depthWrite:false});
   const outer=new THREE.Mesh(sphGeoOuter,outerMat);
-  outer.position.copy(lp(s)); outer.scale.setScalar(1.6);
+  outer.position.copy(lp(s)); outer.scale.setScalar(1.8);
   G.life.add(outer);
 
-  // Main sphere — big solid glowing orb
-  const mat=new THREE.MeshStandardMaterial({color:col,emissive:col,emissiveIntensity:.8,transparent:true,opacity:.85,roughness:.2,metalness:.1});
+  // Main sphere — glass-like physical material with transmission
+  const mat=new THREE.MeshPhysicalMaterial({
+    color:col, emissive:col, emissiveIntensity:.5,
+    transparent:true, opacity:.55,
+    roughness:.05, metalness:.0,
+    transmission:.4,       // glass-like light pass-through
+    thickness:1.5,         // refraction depth
+    ior:1.45,              // glass index of refraction
+    clearcoat:1,           // glossy surface coating
+    clearcoatRoughness:.05,
+    envMap, envMapIntensity:.6,
+    side:THREE.FrontSide, depthWrite:false,
+  });
   const mesh=new THREE.Mesh(sphGeo,mat);
   mesh.position.copy(lp(s));
   mesh.userData={type:'sephira',data:s,mat,outerMat};
@@ -245,7 +287,7 @@ seph.forEach((s,i)=>{
   lifeMeshes.push(mesh);
   allHit.push(mesh);
 
-  // Bright core
+  // Bright inner core — visible through the glass
   const coreMat=new THREE.MeshBasicMaterial({color:0xffffff});
   const core=new THREE.Mesh(sphGeoCore,coreMat);
   core.position.copy(lp(s));
@@ -270,8 +312,16 @@ qlip.forEach((q,i)=>{
   outer.position.copy(dp(q)); outer.scale.setScalar(1.5);
   G.death.add(outer);
 
-  // Main sphere — visible dark orb
-  const mat=new THREE.MeshStandardMaterial({color:col,emissive:col,emissiveIntensity:.6,transparent:true,opacity:.8,roughness:.3,metalness:.2});
+  // Main sphere — dark glass orb with smoky transmission
+  const mat=new THREE.MeshPhysicalMaterial({
+    color:col, emissive:col, emissiveIntensity:.4,
+    transparent:true, opacity:.5,
+    roughness:.1, metalness:.05,
+    transmission:.3, thickness:2, ior:1.5,
+    clearcoat:.8, clearcoatRoughness:.1,
+    envMap, envMapIntensity:.3,
+    side:THREE.FrontSide, depthWrite:false,
+  });
   const mesh=new THREE.Mesh(sphGeo,mat);
   mesh.position.copy(dp(q));
   mesh.userData={type:'qlipha',data:q,mat,outerMat};
@@ -306,22 +356,64 @@ function addLabel(text, pos, color, opacity, fontSize, group, dx, dy){
 }
 
 // ═══ PATHS — Tree of Life (golden) ═══
+// Procedural bark texture for branches
+function makeBarkTexture(baseColor, isDeath){
+  const cv=document.createElement('canvas'); cv.width=128; cv.height=32;
+  const cx=cv.getContext('2d');
+  const c=new THREE.Color(baseColor);
+  // Base bark color
+  cx.fillStyle=isDeath?`rgb(${c.r*180|0},${c.g*120|0},${c.b*120|0})`:`rgb(${c.r*200|0},${c.g*180|0},${c.b*140|0})`;
+  cx.fillRect(0,0,128,32);
+  // Bark grain lines — longitudinal streaks
+  for(let i=0;i<60;i++){
+    const y=Math.random()*32;
+    const w=Math.random()*80+20;
+    const x=Math.random()*128;
+    cx.strokeStyle=`rgba(${isDeath?'40,10,10':'80,60,30'},${.15+Math.random()*.2})`;
+    cx.lineWidth=.5+Math.random()*1.5;
+    cx.beginPath(); cx.moveTo(x,y); cx.lineTo(x+w,y+Math.random()*4-2); cx.stroke();
+  }
+  // Knots and dark spots
+  for(let i=0;i<8;i++){
+    cx.fillStyle=`rgba(${isDeath?'20,5,5':'40,25,10'},${.1+Math.random()*.15})`;
+    cx.beginPath(); cx.arc(Math.random()*128,Math.random()*32,1+Math.random()*3,0,Math.PI*2); cx.fill();
+  }
+  const tex=new THREE.CanvasTexture(cv);
+  tex.wrapS=tex.wrapT=THREE.RepeatWrapping;
+  tex.repeat.set(3,1);
+  return tex;
+}
+
 function buildPath(a,b,color,opacity,group,emissive){
+  const isDeath=group===G.death;
   const pts=[];
+  // Organic curve — slight wobble like a real branch
   for(let i=0;i<=40;i++){
     const t=i/40;
     const p=new THREE.Vector3().lerpVectors(a,b,t);
     p.z+=Math.sin(t*PI)*.12;
+    // Add slight organic wobble
+    p.x+=Math.sin(t*PI*3)*.015;
+    p.y+=Math.cos(t*PI*2.5)*.01;
     pts.push(p);
   }
   const curve=new THREE.CatmullRomCurve3(pts);
-  // Thick solid tube — visible like a real tree branch
-  const geo=new THREE.TubeGeometry(curve,30,.12,8,false);
+  // Variable-width branch — thicker in middle, thinner at ends
+  const radii=[];
+  for(let i=0;i<=30;i++){
+    const t=i/30;
+    radii.push(.06+Math.sin(t*PI)*.07); // .06 at ends, .13 at center
+  }
+  const geo=new THREE.TubeGeometry(curve,30,.1,8,false);
+  // Bark-textured branch material
+  const barkTex=makeBarkTexture(color,isDeath);
   const mat=new THREE.MeshStandardMaterial({
     color, emissive: emissive||color,
-    emissiveIntensity:.4,
+    emissiveIntensity:.25,
+    map:barkTex,
     transparent:true, opacity,
-    roughness:.4, metalness:.1,
+    roughness:.7, metalness:.05,
+    envMap, envMapIntensity:.15,
   });
   const mesh=new THREE.Mesh(geo,mat);
   group.add(mesh);
@@ -684,9 +776,11 @@ document.querySelectorAll('.tb').forEach(btn=>{
       const labels=['3D View','Top View','Side View'];
       viewMode=modes[(modes.indexOf(viewMode)+1)%3];
       btn.textContent=labels[modes.indexOf(viewMode)];
+      camTransitionFrom={x:camera.position.x, y:camera.position.y, z:camera.position.z};
       if(viewMode==='3d')   { camTarget={x:20,y:12,z:15}; }
       if(viewMode==='top')  { camTarget={x:0,y:28,z:-4.5}; }
       if(viewMode==='side') { camTarget={x:28,y:0,z:-5}; }
+      camTransitionT=1; // start a one-shot transition
       return;
     }
     if(t==='all'){show.life=show.death=show.daat=true;}
@@ -885,11 +979,14 @@ function animate(){
 
   updateRealm();
 
-  // Smooth camera view transition (only after intro finishes)
-  if(!ctrl.autoRotate && introT>=1){
-    camera.position.x += (camTarget.x - camera.position.x) * .03;
-    camera.position.y += (camTarget.y - camera.position.y) * .03;
-    camera.position.z += (camTarget.z - camera.position.z) * .03;
+  // One-shot camera transition — only runs when a view button is clicked, then stops
+  if(camTransitionT > 0 && introT>=1){
+    camTransitionT = Math.max(0, camTransitionT - .02); // ~50 frames to complete
+    const e = 1 - camTransitionT;
+    const ease = 1 - Math.pow(1 - e, 3); // ease-out cubic
+    camera.position.x = camTransitionFrom.x + (camTarget.x - camTransitionFrom.x) * ease;
+    camera.position.y = camTransitionFrom.y + (camTarget.y - camTransitionFrom.y) * ease;
+    camera.position.z = camTransitionFrom.z + (camTarget.z - camTransitionFrom.z) * ease;
   }
 
   // Dynamic light pulsing
