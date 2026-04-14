@@ -9,33 +9,7 @@
 <meta name="description" content="Interactive 3D Kabbalistic visualization — Tree of Life & Tree of Death united through Da'at">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>✡</text></svg>">
 <title>The Twin Trees — Etz Chaim & Qliphoth</title>
-<style>
-*{margin:0;padding:0;box-sizing:border-box}
-html,body{height:100%;width:100%;position:fixed;top:0;left:0}
-body{background:#000;overflow:hidden;font-family:'Segoe UI',system-ui,-apple-system,sans-serif;color:#ccc;touch-action:none;-webkit-tap-highlight-color:transparent}
-canvas{display:block;background:#000;width:100%!important;height:100%!important}
-#hud{position:fixed;inset:0;pointer-events:none;z-index:10}
-#title-bar{position:absolute;top:max(8px,env(safe-area-inset-top,8px));left:50%;transform:translateX(-50%);text-align:center;width:90%}
-#title-bar h1{font-size:clamp(9px,2.5vw,12px);font-weight:400;letter-spacing:clamp(2px,1vw,5px);text-transform:uppercase;color:rgba(200,180,140,0.6)}
-#title-bar .sub{font-size:clamp(6px,1.5vw,8px);letter-spacing:clamp(1px,.5vw,2px);color:rgba(200,180,140,0.3);margin-top:2px}
-#toggle-bar{position:absolute;top:clamp(36px,8vw,50px);left:50%;transform:translateX(-50%);display:flex;gap:4px;pointer-events:auto;flex-wrap:wrap;justify-content:center;max-width:95%;padding:0 8px}
-.tb{background:rgba(0,0,0,0.6);border:1px solid rgba(200,180,140,0.15);color:rgba(200,180,140,0.45);font-size:clamp(7px,1.8vw,9px);line-height:1;font-family:inherit;letter-spacing:1px;text-transform:uppercase;padding:clamp(3px,.8vw,5px) clamp(6px,1.5vw,10px);border-radius:3px;cursor:pointer;transition:all .3s;white-space:nowrap;-webkit-tap-highlight-color:transparent}
-.tb:hover,.tb.on{border-color:rgba(200,180,140,0.45);color:rgba(200,180,140,0.9);background:rgba(200,180,140,0.08)}
-#info{position:absolute;bottom:max(12px,env(safe-area-inset-bottom,12px));left:12px;right:12px;max-width:min(340px,calc(100vw - 24px));background:rgba(0,0,0,0.88);border:1px solid rgba(200,180,140,0.1);border-radius:5px;padding:12px 14px;pointer-events:auto;backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);transition:opacity .3s,transform .3s;opacity:0;transform:translateY(6px)}
-#info.show{opacity:1;transform:translateY(0)}
-#info .nm{font-size:clamp(13px,3.5vw,16px);font-weight:600;letter-spacing:2px}
-#info .hb{font-size:clamp(16px,4vw,22px);direction:rtl;margin:1px 0 4px}
-#info .tt{font-size:clamp(7px,1.8vw,9px);letter-spacing:2px;text-transform:uppercase;color:rgba(200,180,140,0.45);margin-bottom:5px}
-#info .ds{font-size:clamp(9px,2.2vw,11px);line-height:1.5;color:rgba(200,200,200,0.6)}
-#info .mt{margin-top:5px;font-size:clamp(7px,1.6vw,9px);color:rgba(200,180,140,0.3);letter-spacing:1px}
-#realm{position:absolute;right:max(12px,env(safe-area-inset-right,12px));top:50%;transform:translateY(-50%);writing-mode:vertical-rl;font-size:clamp(7px,1.6vw,9px);letter-spacing:3px;text-transform:uppercase;transition:color .6s,text-shadow .6s}
-#hint{position:absolute;bottom:max(12px,env(safe-area-inset-bottom,12px));right:max(12px,env(safe-area-inset-right,12px));font-size:7px;letter-spacing:1px;color:rgba(200,180,140,0.15);text-align:right;line-height:1.8}
-@media(max-width:600px){
-  #hint{display:none}
-  #realm{font-size:7px;letter-spacing:2px;right:6px}
-  #info{left:8px;right:8px;padding:10px 12px}
-}
-</style>
+<link rel="stylesheet" href="./style.css">
 </head>
 <body>
 
@@ -71,9 +45,9 @@ import {OrbitControls} from 'three/addons/controls/OrbitControls.js';
 import {EffectComposer} from 'three/addons/postprocessing/EffectComposer.js';
 import {RenderPass} from 'three/addons/postprocessing/RenderPass.js';
 import {UnrealBloomPass} from 'three/addons/postprocessing/UnrealBloomPass.js';
+import { seph, qlip, pathData, paths, flashSeq, S3 } from './js/data.js';
 
 const PI=Math.PI, TAU=PI*2;
-const S3=Math.sqrt(3)/2; // sacred Flower of Life spacing
 const SC=4.2; // Bigger spread — easier to navigate and see individual nodes
 // Pancake layout: trees are FLAT horizontal planes stacked with space between
 const LIFE_H = 8;   // Tree of Life plane height (top pancake) — more space between trees
@@ -167,66 +141,12 @@ let camTransitionT = 0; // 0 = done transitioning, >0 = still moving
 let camTransitionFrom = {x:20, y:12, z:15};
 let lookTarget = {x:0, y:0, z:-5};
 
-// ═══ DATA ═══
-const seph=[
-  {id:1, n:'Kether',   hb:'כתר',  en:'Crown',        x:0,  y:4,  c:0xFFFFFF,pl:'Primum Mobile',ar:'Metatron',  gn:'Eheieh',          d:'Pure divine will — the point of origin from which all existence flows.'},
-  {id:2, n:'Chokmah',  hb:'חכמה', en:'Wisdom',        x:S3, y:3,  c:0xAABBDD,pl:'Uranus',       ar:'Raziel',   gn:'Yah',             d:'Active masculine force — the first flash of creative insight.'},
-  {id:3, n:'Binah',    hb:'בינה', en:'Understanding',  x:-S3,y:3,  c:0x4444AA,pl:'Saturn',       ar:'Tzaphkiel',gn:'YHVH Elohim',     d:'Receptive feminine force — the womb that gives form to wisdom.'},
-  {id:4, n:'Chesed',   hb:'חסד',  en:'Mercy',          x:S3, y:2,  c:0x2266FF,pl:'Jupiter',      ar:'Tzadkiel', gn:'El',              d:'Expansive love and benevolence. Grace and abundance.'},
-  {id:5, n:'Geburah',  hb:'גבורה',en:'Severity',       x:-S3,y:2,  c:0xFF2400,pl:'Mars',         ar:'Khamael',  gn:'Elohim Gibor',    d:'Disciplined strength and judgment. Necessary restriction.'},
-  {id:6, n:'Tiphareth',hb:'תפארת',en:'Beauty',         x:0,  y:2,  c:0xFFD700,pl:'Sun',          ar:'Raphael',  gn:'YHVH Eloah',      d:'The heart of the Tree — perfect balance. The solar center.'},
-  {id:7, n:'Netzach',  hb:'נצח',  en:'Victory',        x:S3, y:1,  c:0x50C878,pl:'Venus',        ar:'Haniel',   gn:'YHVH Tzabaoth',   d:'The force of nature, desire, emotion, and artistic inspiration.'},
-  {id:8, n:'Hod',      hb:'הוד',  en:'Splendor',       x:-S3,y:1,  c:0xFF8C00,pl:'Mercury',      ar:'Michael',  gn:'Elohim Tzabaoth', d:'Intellect, communication, and rational thought.'},
-  {id:9, n:'Yesod',    hb:'יסוד', en:'Foundation',     x:0,  y:.5, c:0x9955FF,pl:'Moon',         ar:'Gabriel',  gn:'Shaddai El Chai', d:'The astral foundation — the lunar mirror.'},
-  {id:10,n:'Malkuth',  hb:'מלכות',en:'Kingdom',        x:0,  y:0,  c:0xCCAA33,pl:'Earth',        ar:'Sandalphon',gn:'Adonai ha-Aretz',d:'The physical world — where all divine forces manifest.'},
-];
-// Qliphoth positions match their sephiroth mirrors (same pillar layout, not mirrored)
-const qlip=[
-  {id:1, n:'Thaumiel',    en:'Twin Gods',           x:0,  y:-4,  c:0x332255,dm:'Satan/Moloch',     d:'Duality and division — the splitting of divine unity.'},
-  {id:2, n:'Ghogiel',     en:'The Hinderers',       x:S3, y:-3,  c:0x223366,dm:'Beelzebub',        d:'Obstruction — lies masquerading as truth.'},
-  {id:3, n:'Satariel',    en:'The Concealers',      x:-S3,y:-3,  c:0x442211,dm:'Lucifuge Rofocale',d:'Concealment — matter divorced from wisdom.'},
-  {id:4, n:"Gha'agsheklah",en:'The Devourers',      x:S3, y:-2,  c:0x112266,dm:'Astaroth',         d:'Devouring love — mercy perverted into greed.'},
-  {id:5, n:'Golachab',    en:'The Burners',         x:-S3,y:-2,  c:0x881111,dm:'Asmodeus',         d:'Unbridled wrath — volcanic uncontrolled anger.'},
-  {id:6, n:'Thagirion',   en:'The Disputers',       x:0,  y:-2,  c:0x554400,dm:'Belphegor',        d:'The Black Sun radiating death instead of life.'},
-  {id:7, n:"A'arab Zaraq",en:'Ravens of Dispersion',x:S3, y:-1,  c:0x226633,dm:'Baal',             d:'Uncontrolled passion — hollow conquest.'},
-  {id:8, n:'Samael',      en:'Poison of God',       x:-S3,y:-1,  c:0x885522,dm:'Adrammelech',      d:'Intellectual poison — barren logic and deception.'},
-  {id:9, n:'Gamaliel',    en:'The Obscene Ones',    x:0,  y:-.5, c:0x331155,dm:'Lilith',           d:'Pollution of astral imagination — dark dreams.'},
-  {id:10,n:'Lilith',      en:'The Whisperers',      x:0,  y:0,   c:0x332211,dm:'Naamah',           d:'Material world as prison rather than temple.'},
-];
-// 22 Paths with Hebrew letters, meanings, and Tarot
-const pathData=[
-  {c:[1,2], hb:'א',letter:'Aleph',  mean:'Ox',       tarot:'The Fool',         attr:'Air'},
-  {c:[1,3], hb:'ב',letter:'Beth',   mean:'House',    tarot:'The Magician',     attr:'Mercury'},
-  {c:[1,6], hb:'ג',letter:'Gimel',  mean:'Camel',    tarot:'High Priestess',   attr:'Moon'},
-  {c:[2,3], hb:'ד',letter:'Daleth', mean:'Door',     tarot:'The Empress',      attr:'Venus'},
-  {c:[2,6], hb:'ה',letter:'Heh',    mean:'Window',   tarot:'The Emperor',      attr:'Aries'},
-  {c:[2,4], hb:'ו',letter:'Vav',    mean:'Nail',     tarot:'Hierophant',       attr:'Taurus'},
-  {c:[3,6], hb:'ז',letter:'Zayin',  mean:'Sword',    tarot:'The Lovers',       attr:'Gemini'},
-  {c:[3,5], hb:'ח',letter:'Cheth',  mean:'Fence',    tarot:'The Chariot',      attr:'Cancer'},
-  {c:[4,5], hb:'ט',letter:'Teth',   mean:'Serpent',  tarot:'Strength',         attr:'Leo'},
-  {c:[4,6], hb:'י',letter:'Yod',    mean:'Hand',     tarot:'The Hermit',       attr:'Virgo'},
-  {c:[4,7], hb:'כ',letter:'Kaph',   mean:'Palm',     tarot:'Wheel of Fortune', attr:'Jupiter'},
-  {c:[5,6], hb:'ל',letter:'Lamed',  mean:'Ox Goad',  tarot:'Justice',          attr:'Libra'},
-  {c:[5,8], hb:'מ',letter:'Mem',    mean:'Water',    tarot:'Hanged Man',       attr:'Water'},
-  {c:[6,7], hb:'נ',letter:'Nun',    mean:'Fish',     tarot:'Death',            attr:'Scorpio'},
-  {c:[6,9], hb:'ס',letter:'Samekh', mean:'Prop',     tarot:'Temperance',       attr:'Sagittarius'},
-  {c:[6,8], hb:'ע',letter:'Ayin',   mean:'Eye',      tarot:'The Devil',        attr:'Capricorn'},
-  {c:[7,8], hb:'פ',letter:'Peh',    mean:'Mouth',    tarot:'The Tower',        attr:'Mars'},
-  {c:[7,9], hb:'צ',letter:'Tzaddi', mean:'Fishhook', tarot:'The Star',         attr:'Aquarius'},
-  {c:[7,10],hb:'ק',letter:'Qoph',   mean:'Back of Head',tarot:'The Moon',      attr:'Pisces'},
-  {c:[8,9], hb:'ר',letter:'Resh',   mean:'Head',     tarot:'The Sun',          attr:'Sun'},
-  {c:[8,10],hb:'ש',letter:'Shin',   mean:'Tooth',    tarot:'Judgement',        attr:'Fire'},
-  {c:[9,10],hb:'ת',letter:'Tav',    mean:'Cross',    tarot:'The World',        attr:'Saturn'},
-];
-const paths=pathData.map(p=>p.c);
-const flashSeq=[1,2,3,4,5,6,7,8,9,10]; // Lightning Flash order
-
 // Trees lay FLAT like pancakes — PERFECTLY ALIGNED vertically
 // Same X/Z positions, different Y heights. Kether directly above Thaumiel.
 // seph y is positive (4→0), qlip y is negative (-4→0)
 // Both need same z: negate seph y, keep qlip y as-is
-const lp=s=>new THREE.Vector3(s.x*SC, LIFE_H, -s.y*SC);
-const dp=q=>new THREE.Vector3(q.x*SC, DEATH_H, q.y*SC);
+const getLifePos=sephNode=>new THREE.Vector3(sephNode.x*SC, LIFE_H, -sephNode.y*SC);
+const getDeathPos=qlipNode=>new THREE.Vector3(qlipNode.x*SC, DEATH_H, qlipNode.y*SC);
 
 // ═══ PROCEDURAL ENVIRONMENT MAP (for reflections) ═══
 const pmremGen = new THREE.PMREMGenerator(renderer);
@@ -258,13 +178,13 @@ const sphGeo=new THREE.SphereGeometry(.9,GEO_DETAIL,GEO_DETAIL);
 const sphGeoOuter=new THREE.SphereGeometry(1.2,GEO_DETAIL,GEO_DETAIL);
 const sphGeoCore=new THREE.SphereGeometry(.35,Math.max(12,GEO_DETAIL/2),Math.max(12,GEO_DETAIL/2));
 
-seph.forEach((s,i)=>{
-  const col=new THREE.Color(s.c);
+seph.forEach((sephNode,i)=>{
+  const col=new THREE.Color(sephNode.color);
 
   // Outer glow sphere — soft halo
   const outerMat=new THREE.MeshBasicMaterial({color:col,transparent:true,opacity:.15,side:THREE.BackSide,depthWrite:false});
   const outer=new THREE.Mesh(sphGeoOuter,outerMat);
-  outer.position.copy(lp(s)); outer.scale.setScalar(1.8);
+  outer.position.copy(getLifePos(sephNode)); outer.scale.setScalar(1.8);
   G.life.add(outer);
 
   // Main sphere — glass-like physical material with transmission
@@ -281,8 +201,8 @@ seph.forEach((s,i)=>{
     side:THREE.FrontSide, depthWrite:false,
   });
   const mesh=new THREE.Mesh(sphGeo,mat);
-  mesh.position.copy(lp(s));
-  mesh.userData={type:'sephira',data:s,mat,outerMat};
+  mesh.position.copy(getLifePos(sephNode));
+  mesh.userData={type:'sephira',data:sephNode,mat,outerMat};
   G.life.add(mesh);
   lifeMeshes.push(mesh);
   allHit.push(mesh);
@@ -290,18 +210,18 @@ seph.forEach((s,i)=>{
   // Bright inner core — visible through the glass
   const coreMat=new THREE.MeshBasicMaterial({color:0xffffff});
   const core=new THREE.Mesh(sphGeoCore,coreMat);
-  core.position.copy(lp(s));
+  core.position.copy(getLifePos(sephNode));
   G.life.add(core);
 
   // Hebrew + Name labels
-  addLabel(s.hb, lp(s), col, .7, 24, G.life, 0, .72);
-  addLabel(s.n, lp(s), new THREE.Color(0xC8B48C), .55, 12, G.life, 0, -.7);
+  addLabel(sephNode.hebrew, getLifePos(sephNode), col, .7, 24, G.life, 0, .72);
+  addLabel(sephNode.name, getLifePos(sephNode), new THREE.Color(0xC8B48C), .55, 12, G.life, 0, -.7);
 });
 
 // ═══ BUILD QLIPHOTH ═══
 const deathMeshes=[];
-qlip.forEach((q,i)=>{
-  const col=new THREE.Color(q.c);
+qlip.forEach((qlipNode,i)=>{
+  const col=new THREE.Color(qlipNode.color);
   // Ensure minimum brightness
   const hsl={};col.getHSL(hsl);
   if(hsl.l<.12) col.setHSL(hsl.h, Math.max(hsl.s,.3), .15);
@@ -309,7 +229,7 @@ qlip.forEach((q,i)=>{
   // Outer dark glow
   const outerMat=new THREE.MeshBasicMaterial({color:col,transparent:true,opacity:.1,side:THREE.BackSide,depthWrite:false});
   const outer=new THREE.Mesh(sphGeoOuter,outerMat);
-  outer.position.copy(dp(q)); outer.scale.setScalar(1.5);
+  outer.position.copy(getDeathPos(qlipNode)); outer.scale.setScalar(1.5);
   G.death.add(outer);
 
   // Main sphere — dark glass orb with smoky transmission
@@ -323,8 +243,8 @@ qlip.forEach((q,i)=>{
     side:THREE.FrontSide, depthWrite:false,
   });
   const mesh=new THREE.Mesh(sphGeo,mat);
-  mesh.position.copy(dp(q));
-  mesh.userData={type:'qlipha',data:q,mat,outerMat};
+  mesh.position.copy(getDeathPos(qlipNode));
+  mesh.userData={type:'qlipha',data:qlipNode,mat,outerMat};
   G.death.add(mesh);
   deathMeshes.push(mesh);
   allHit.push(mesh);
@@ -332,88 +252,88 @@ qlip.forEach((q,i)=>{
   // Dark core
   const coreMat=new THREE.MeshBasicMaterial({color:col.clone().multiplyScalar(1.5)});
   const core=new THREE.Mesh(sphGeoCore,coreMat);
-  core.position.copy(dp(q));
+  core.position.copy(getDeathPos(qlipNode));
   G.death.add(core);
 
-  addLabel(q.n, dp(q), new THREE.Color(0x884444), .5, 10, G.death, 0, -.7);
+  addLabel(qlipNode.name, getDeathPos(qlipNode), new THREE.Color(0x884444), .5, 10, G.death, 0, -.7);
 });
 
 // ═══ LABEL HELPER ═══
 function addLabel(text, pos, color, opacity, fontSize, group, dx, dy){
-  const cv=document.createElement('canvas');
-  cv.width=256;cv.height=64;
-  const cx=cv.getContext('2d');
-  cx.font=`${fontSize}px Segoe UI`;
-  cx.fillStyle=`rgba(${color.r*255|0},${color.g*255|0},${color.b*255|0},${opacity})`;
-  cx.textAlign='center';
-  cx.fillText(text,128,40);
-  const tex=new THREE.CanvasTexture(cv);
+  const canvasElement=document.createElement('canvas');
+  canvasElement.width=256;canvasElement.height=64;
+  const context2d=canvasElement.getContext('2d');
+  context2d.font=`${fontSize}px Segoe UI`;
+  context2d.fillStyle=`rgba(${color.r*255|0},${color.g*255|0},${color.b*255|0},${opacity})`;
+  context2d.textAlign='center';
+  context2d.fillText(text,128,40);
+  const tex=new THREE.CanvasTexture(canvasElement);
   tex.minFilter=THREE.LinearFilter;
-  const sp=new THREE.Sprite(new THREE.SpriteMaterial({map:tex,transparent:true,depthWrite:false}));
-  sp.position.set(pos.x+dx, pos.y+dy, pos.z);
-  sp.scale.set(2,.5,1);
-  group.add(sp);
+  const spriteMesh=new THREE.Sprite(new THREE.SpriteMaterial({map:tex,transparent:true,depthWrite:false}));
+  spriteMesh.position.set(pos.x+dx, pos.y+dy, pos.z);
+  spriteMesh.scale.set(2,.5,1);
+  group.add(spriteMesh);
 }
 
 // ═══ PATHS — Tree of Life (golden) ═══
 // HQ Procedural bark texture + bump map for branches
 function makeBarkTextures(baseColor, isDeath){
   const W=512, H=64; // high-res for sharp detail
-  const cv=document.createElement('canvas'); cv.width=W; cv.height=H;
-  const cx=cv.getContext('2d');
+  const canvasElement=document.createElement('canvas'); canvasElement.width=W; canvasElement.height=H;
+  const context2d=canvasElement.getContext('2d');
   const c=new THREE.Color(baseColor);
 
   // Base bark color — richer, more saturated
   const br=isDeath?c.r*220|0:c.r*240|0, bg=isDeath?c.g*140|0:c.g*200|0, bb=isDeath?c.b*140|0:c.b*160|0;
-  cx.fillStyle=`rgb(${br},${bg},${bb})`;
-  cx.fillRect(0,0,W,H);
+  context2d.fillStyle=`rgb(${br},${bg},${bb})`;
+  context2d.fillRect(0,0,W,H);
 
   // Bark grain — many fine longitudinal fibers
   for(let i=0;i<200;i++){
     const y=Math.random()*H;
     const w=40+Math.random()*200;
     const x=Math.random()*W;
-    cx.strokeStyle=`rgba(${isDeath?'60,15,15':'100,70,35'},${.08+Math.random()*.15})`;
-    cx.lineWidth=.3+Math.random()*2;
-    cx.beginPath(); cx.moveTo(x,y);
+    context2d.strokeStyle=`rgba(${isDeath?'60,15,15':'100,70,35'},${.08+Math.random()*.15})`;
+    context2d.lineWidth=.3+Math.random()*2;
+    context2d.beginPath(); context2d.moveTo(x,y);
     // Slightly curved grain for realism
-    cx.quadraticCurveTo(x+w*.5, y+Math.random()*6-3, x+w, y+Math.random()*4-2);
-    cx.stroke();
+    context2d.quadraticCurveTo(x+w*.5, y+Math.random()*6-3, x+w, y+Math.random()*4-2);
+    context2d.stroke();
   }
 
   // Deep bark furrows — thicker dark lines
   for(let i=0;i<30;i++){
     const y=Math.random()*H;
-    cx.strokeStyle=`rgba(${isDeath?'15,3,3':'30,15,5'},${.2+Math.random()*.2})`;
-    cx.lineWidth=1+Math.random()*3;
-    cx.beginPath();
-    cx.moveTo(0,y);
+    context2d.strokeStyle=`rgba(${isDeath?'15,3,3':'30,15,5'},${.2+Math.random()*.2})`;
+    context2d.lineWidth=1+Math.random()*3;
+    context2d.beginPath();
+    context2d.moveTo(0,y);
     for(let x=0;x<W;x+=20){
-      cx.lineTo(x, y+Math.sin(x*.05)*3+Math.random()*2-1);
+      context2d.lineTo(x, y+Math.sin(x*.05)*3+Math.random()*2-1);
     }
-    cx.stroke();
+    context2d.stroke();
   }
 
   // Knots, whorls, and lichen spots
   for(let i=0;i<15;i++){
     const kx=Math.random()*W, ky=Math.random()*H, kr=2+Math.random()*5;
-    cx.fillStyle=`rgba(${isDeath?'25,8,8':'50,30,12'},${.12+Math.random()*.15})`;
-    cx.beginPath(); cx.ellipse(kx,ky,kr,kr*.6,Math.random()*PI,0,PI*2); cx.fill();
+    context2d.fillStyle=`rgba(${isDeath?'25,8,8':'50,30,12'},${.12+Math.random()*.15})`;
+    context2d.beginPath(); context2d.ellipse(kx,ky,kr,kr*.6,Math.random()*PI,0,PI*2); context2d.fill();
     // Ring around knot
-    cx.strokeStyle=`rgba(${isDeath?'40,12,12':'70,40,20'},${.1})`;
-    cx.lineWidth=.5;
-    cx.beginPath(); cx.ellipse(kx,ky,kr+2,kr*.6+1,Math.random()*PI,0,PI*2); cx.stroke();
+    context2d.strokeStyle=`rgba(${isDeath?'40,12,12':'70,40,20'},${.1})`;
+    context2d.lineWidth=.5;
+    context2d.beginPath(); context2d.ellipse(kx,ky,kr+2,kr*.6+1,Math.random()*PI,0,PI*2); context2d.stroke();
   }
 
   // Lighter highlights on bark ridges
   for(let i=0;i<40;i++){
     const y=Math.random()*H;
-    cx.strokeStyle=`rgba(${isDeath?'80,40,40':'160,130,80'},${.05+Math.random()*.08})`;
-    cx.lineWidth=.5+Math.random();
-    cx.beginPath(); cx.moveTo(Math.random()*W, y); cx.lineTo(Math.random()*W, y+Math.random()*2); cx.stroke();
+    context2d.strokeStyle=`rgba(${isDeath?'80,40,40':'160,130,80'},${.05+Math.random()*.08})`;
+    context2d.lineWidth=.5+Math.random();
+    context2d.beginPath(); context2d.moveTo(Math.random()*W, y); context2d.lineTo(Math.random()*W, y+Math.random()*2); context2d.stroke();
   }
 
-  const colorTex=new THREE.CanvasTexture(cv);
+  const colorTex=new THREE.CanvasTexture(canvasElement);
   colorTex.wrapS=colorTex.wrapT=THREE.RepeatWrapping;
   colorTex.repeat.set(4,1);
   colorTex.anisotropy=renderer.capabilities.getMaxAnisotropy();
@@ -421,7 +341,7 @@ function makeBarkTextures(baseColor, isDeath){
   // Generate bump map from the bark texture — darker = lower
   const bmpCv=document.createElement('canvas'); bmpCv.width=W; bmpCv.height=H;
   const bx=bmpCv.getContext('2d');
-  bx.drawImage(cv,0,0);
+  bx.drawImage(canvasElement,0,0);
   const imgData=bx.getImageData(0,0,W,H);
   const d=imgData.data;
   for(let i=0;i<d.length;i+=4){
@@ -476,14 +396,14 @@ function buildPath(a,b,color,opacity,group,emissive){
 const lifePathMeshes=[];
 pathData.forEach((pd,i)=>{
   const [a,b]=pd.c;
-  const sa=seph.find(s=>s.id===a),sb=seph.find(s=>s.id===b);
-  const pa=lp(sa), pb=lp(sb);
+  const sa=seph.find(sephNode=>sephNode.id===a),sb=seph.find(sephNode=>sephNode.id===b);
+  const pa=getLifePos(sa), pb=getLifePos(sb);
   lifePathMeshes.push(buildPath(pa,pb,0xC8B48C,.7,G.life,0x997744));
 
   // Path label at midpoint — Hebrew letter + name
   const mid=new THREE.Vector3().lerpVectors(pa,pb,.5);
   mid.z+=.3; // push label slightly forward
-  addLabel(`${pd.hb} ${pd.letter}`, mid, new THREE.Color(0xddcc88), .45, 9, G.life, 0, 0);
+  addLabel(`${pd.hebrew} ${pd.letter}`, mid, new THREE.Color(0xddcc88), .45, 9, G.life, 0, 0);
 
   // Make path clickable — add invisible hit cylinder at midpoint
   const hitGeo=new THREE.SphereGeometry(.3,8,8);
@@ -491,11 +411,11 @@ pathData.forEach((pd,i)=>{
   const hitMesh=new THREE.Mesh(hitGeo,hitMat);
   hitMesh.position.copy(mid);
   hitMesh.userData={type:'path',data:{
-    n:`Path ${i+11}: ${pd.letter}`,
-    hb:pd.hb,
-    en:`${pd.mean} — ${pd.tarot}`,
-    d:`The ${pd.letter} path (${pd.hb}, "${pd.mean}") connects ${sa.n} to ${sb.n}. Associated with ${pd.tarot} and the element/sign of ${pd.attr}.`,
-    pl:pd.attr, ar:pd.tarot, gn:`${sa.n} ↔ ${sb.n}`, dm:''
+    name:`Path ${i+11}: ${pd.letter}`,
+    hebrew:pd.hebrew,
+    english:`${pd.meaning} — ${pd.tarot}`,
+    desc:`The ${pd.letter} path (${pd.hebrew}, "${pd.meaning}") connects ${sa.name} to ${sb.name}. Associated with ${pd.tarot} and the element/sign of ${pd.attribution}.`,
+    planet:pd.attribution, archangel:pd.tarot, godName:`${sa.name} ↔ ${sb.name}`, demonRuler:''
   }};
   G.life.add(hitMesh);
   allHit.push(hitMesh);
@@ -504,14 +424,14 @@ pathData.forEach((pd,i)=>{
 const deathPathMeshes=[];
 pathData.forEach((pd,i)=>{
   const [a,b]=pd.c;
-  const qa=qlip.find(q=>q.id===a),qb=qlip.find(q=>q.id===b);
-  const pa=dp(qa), pb=dp(qb);
+  const qa=qlip.find(qlipNode=>qlipNode.id===a),qb=qlip.find(qlipNode=>qlipNode.id===b);
+  const pa=getDeathPos(qa), pb=getDeathPos(qb);
   deathPathMeshes.push(buildPath(pa,pb,0x661515,.6,G.death,0x441010));
 
   // Full path label — Hebrew letter + name (matching Life tree)
   const mid=new THREE.Vector3().lerpVectors(pa,pb,.5);
   mid.z+=.3;
-  addLabel(`${pd.hb} ${pd.letter}`, mid, new THREE.Color(0x884444), .4, 9, G.death, 0, 0);
+  addLabel(`${pd.hebrew} ${pd.letter}`, mid, new THREE.Color(0x884444), .4, 9, G.death, 0, 0);
 
   // Clickable hit target for Death path info
   const hitGeo=new THREE.SphereGeometry(.3,8,8);
@@ -519,11 +439,11 @@ pathData.forEach((pd,i)=>{
   const hitMesh=new THREE.Mesh(hitGeo,hitMat);
   hitMesh.position.copy(mid);
   hitMesh.userData={type:'path',data:{
-    n:`Tunnel ${i+11}: ${pd.letter}`,
-    hb:pd.hb,
-    en:`${pd.mean} — ${pd.tarot} (Reversed)`,
-    d:`The ${pd.letter} tunnel (${pd.hb}, "${pd.mean}") connects ${qa.n} to ${qb.n}. Shadow of the ${pd.tarot} — the ${pd.attr} path inverted through the Qliphoth.`,
-    pl:pd.attr, ar:`${pd.tarot} (Shadow)`, gn:`${qa.n} ↔ ${qb.n}`, dm:''
+    name:`Tunnel ${i+11}: ${pd.letter}`,
+    hebrew:pd.hebrew,
+    english:`${pd.meaning} — ${pd.tarot} (Reversed)`,
+    desc:`The ${pd.letter} tunnel (${pd.hebrew}, "${pd.meaning}") connects ${qa.name} to ${qb.name}. Shadow of the ${pd.tarot} — the ${pd.attribution} path inverted through the Qliphoth.`,
+    planet:pd.attribution, archangel:`${pd.tarot} (Shadow)`, godName:`${qa.name} ↔ ${qb.name}`, demonRuler:''
   }};
   G.death.add(hitMesh);
   allHit.push(hitMesh);
@@ -531,7 +451,7 @@ pathData.forEach((pd,i)=>{
 
 // ═══ LIGHTNING FLASH ═══
 let flashAlpha=0, flashTimer=0;
-const flashPts=flashSeq.map(id=>lp(seph.find(s=>s.id===id)));
+const flashPts=flashSeq.map(id=>getLifePos(seph.find(sephNode=>sephNode.id===id)));
 const flashCurve=new THREE.CatmullRomCurve3(flashPts,false,'catmullrom',.3);
 const flashGeo=new THREE.TubeGeometry(flashCurve,80,.15,8,false);
 const flashMat=new THREE.MeshBasicMaterial({color:0xFFDD44,transparent:true,opacity:0,depthWrite:false});
@@ -607,9 +527,9 @@ G.daat.add(daatCore);
 const daatHit=new THREE.Mesh(new THREE.SphereGeometry(1.2,8,8),new THREE.MeshBasicMaterial({visible:false}));
 daatHit.position.copy(daatCenter);
 daatHit.userData={type:'daat',data:{
-  n:"Da'at",hb:'דעת',en:'Knowledge',
-  d:"The invisible shell — the single dot between worlds. Da'at exists on both trees but tunnels converge to this one point — the Abyss made manifest. The membrane between the Tree of Life above and Tree of Death below. Choronzon guards the crossing.",
-  pl:'The Abyss',ar:'Choronzon',gn:'Hidden',dm:''
+  name:"Da'at",hebrew:'דעת',english:'Knowledge',
+  desc:"The invisible shell — the single dot between worlds. Da'at exists on both trees but tunnels converge to this one point — the Abyss made manifest. The membrane between the Tree of Life above and Tree of Death below. Choronzon guards the crossing.",
+  planet:'The Abyss',archangel:'Choronzon',godName:'Hidden',demonRuler:''
 }};
 G.daat.add(daatHit);
 allHit.push(daatHit);
@@ -652,11 +572,11 @@ G.daat.add(makeBeam(lifeDaat, centralDaat, 0xFFD700, 300));
 // Tunnel beams: Death Da'at → Central Da'at
 G.daat.add(makeBeam(deathDaat, centralDaat, 0x882244, 300));
 // Additional connections from Kether and Thaumiel to their Da'at positions
-G.daat.add(makeBeam(lp(seph[0]), lifeDaat, 0xFFD700, 120));
-G.daat.add(makeBeam(dp(qlip[0]), deathDaat, 0x551122, 120));
+G.daat.add(makeBeam(getLifePos(seph[0]), lifeDaat, 0xFFD700, 120));
+G.daat.add(makeBeam(getDeathPos(qlip[0]), deathDaat, 0x551122, 120));
 // Tiphareth and Thagirion also connect
-G.daat.add(makeBeam(lp(seph[5]), lifeDaat, 0xFFD700, 100));
-G.daat.add(makeBeam(dp(qlip[5]), deathDaat, 0x554400, 100));
+G.daat.add(makeBeam(getLifePos(seph[5]), lifeDaat, 0xFFD700, 100));
+G.daat.add(makeBeam(getDeathPos(qlip[5]), deathDaat, 0x554400, 100));
 
 // Small Da'at markers on each tree's plane
 [lifeDaat, deathDaat].forEach((pos,i)=>{
@@ -783,27 +703,27 @@ const iMt=document.getElementById('i-mt');
 function showInfo(d,type){
   infoEl.classList.add('show');
   if(type==='sephira'){
-    iNm.style.color='#'+new THREE.Color(d.c).getHexString();
-    iNm.textContent=d.n;iHb.textContent=d.hb;iHb.style.color='rgba(255,215,0,.7)';
-    iTt.textContent=`${d.en} — Sephira ${d.id} — Tree of Life`;
-    iDs.textContent=d.d;
-    iMt.textContent=`Planet: ${d.pl}  |  Archangel: ${d.ar}  |  God Name: ${d.gn}`;
+    iNm.style.color='#'+new THREE.Color(d.color).getHexString();
+    iNm.textContent=d.name;iHb.textContent=d.hebrew;iHb.style.color='rgba(255,215,0,.7)';
+    iTt.textContent=`${d.english} — Sephira ${d.id} — Tree of Life`;
+    iDs.textContent=d.desc;
+    iMt.textContent=`Planet: ${d.planet}  |  Archangel: ${d.archangel}  |  God Name: ${d.godName}`;
   } else if(type==='qlipha'){
-    iNm.style.color='#aa3333';iNm.textContent=d.n;iHb.textContent='';
-    iTt.textContent=`${d.en} — Qlipha ${d.id} — Tree of Death`;
-    iDs.textContent=d.d;
-    iMt.textContent=`Demon Ruler: ${d.dm}  |  Shell of: ${seph[d.id-1].n}`;
+    iNm.style.color='#aa3333';iNm.textContent=d.name;iHb.textContent='';
+    iTt.textContent=`${d.english} — Qlipha ${d.id} — Tree of Death`;
+    iDs.textContent=d.desc;
+    iMt.textContent=`Demon Ruler: ${d.demonRuler}  |  Shell of: ${seph[d.id-1].name}`;
   } else if(type==='path'){
-    iNm.style.color='#ddcc88';iNm.textContent=d.n;
-    iHb.textContent=d.hb;iHb.style.color='rgba(220,200,120,.7)';
-    iTt.textContent=d.en;
-    iDs.textContent=d.d;
-    iMt.textContent=`${d.pl}  |  ${d.ar}  |  ${d.gn}`;
+    iNm.style.color='#ddcc88';iNm.textContent=d.name;
+    iHb.textContent=d.hebrew;iHb.style.color='rgba(220,200,120,.7)';
+    iTt.textContent=d.english;
+    iDs.textContent=d.desc;
+    iMt.textContent=`${d.planet}  |  ${d.archangel}  |  ${d.godName}`;
   } else {
-    iNm.style.color='#B4A7C7';iNm.textContent=d.n;iHb.textContent=d.hb;iHb.style.color='rgba(180,167,199,.7)';
-    iTt.textContent=`${d.en} — The Hidden Sephira — The Abyss`;
-    iDs.textContent=d.d;
-    iMt.textContent=`${d.pl}  |  ${d.ar}`;
+    iNm.style.color='#B4A7C7';iNm.textContent=d.name;iHb.textContent=d.hebrew;iHb.style.color='rgba(180,167,199,.7)';
+    iTt.textContent=`${d.english} — The Hidden Sephira — The Abyss`;
+    iDs.textContent=d.desc;
+    iMt.textContent=`${d.planet}  |  ${d.archangel}`;
   }
 }
 
@@ -920,15 +840,15 @@ function makeOrbitParticles(center, color, count, radius, speed) {
   return { pts, phases, center, posAttr: geo.attributes.position };
 }
 
-seph.forEach((s, i) => {
-  const sys = makeOrbitParticles(lp(s), s.c, ORBIT_COUNT, 1.2, 1 + i * .1);
+seph.forEach((sephNode, i) => {
+  const sys = makeOrbitParticles(getLifePos(sephNode), sephNode.color, ORBIT_COUNT, 1.2, 1 + i * .1);
   G.life.add(sys.pts);
   orbitSystems.push(sys);
 });
-qlip.forEach((q, i) => {
-  const col = new THREE.Color(q.c);
+qlip.forEach((qlipNode, i) => {
+  const col = new THREE.Color(qlipNode.color);
   const hsl = {}; col.getHSL(hsl);
-  const sys = makeOrbitParticles(dp(q), col.setHSL(hsl.h, Math.max(hsl.s, .3), Math.max(hsl.l, .15)).getHex(), Math.max(6,ORBIT_COUNT-5), 1.1, .8 + i * .08);
+  const sys = makeOrbitParticles(getDeathPos(qlipNode), col.setHSL(hsl.h, Math.max(hsl.s, .3), Math.max(hsl.l, .15)).getHex(), Math.max(6,ORBIT_COUNT-5), 1.1, .8 + i * .08);
   G.death.add(sys.pts);
   orbitSystems.push(sys);
 });
@@ -954,13 +874,13 @@ function makeFlowParticles(a, b, color, count) {
 
 paths.forEach(([ai, bi]) => {
   const sa = seph.find(s => s.id === ai), sb = seph.find(s => s.id === bi);
-  const sys = makeFlowParticles(lp(sa), lp(sb), 0xFFDD88, FLOW_COUNT);
+  const sys = makeFlowParticles(getLifePos(sa), getLifePos(sb), 0xFFDD88, FLOW_COUNT);
   G.life.add(sys.pts);
   flowSystems.push({ ...sys, tree: 'life' });
 });
 paths.forEach(([ai, bi]) => {
   const qa = qlip.find(q => q.id === ai), qb = qlip.find(q => q.id === bi);
-  const sys = makeFlowParticles(dp(qa), dp(qb), 0x882222, Math.max(3,FLOW_COUNT-3));
+  const sys = makeFlowParticles(getDeathPos(qa), getDeathPos(qb), 0x882222, Math.max(3,FLOW_COUNT-3));
   G.death.add(sys.pts);
   flowSystems.push({ ...sys, tree: 'death' });
 });
@@ -980,22 +900,22 @@ G.death.add(abyssPlane2);
 function makeNebula(count, yMin, yMax, colors, group) {
   const nebulaGeo = new THREE.PlaneGeometry(1, 1);
   for (let i = 0; i < count; i++) {
-    const cv = document.createElement('canvas');
-    cv.width = 128; cv.height = 128;
-    const cx = cv.getContext('2d');
+    const canvasElement = document.createElement('canvas');
+    canvasElement.width = 128; canvasElement.height = 128;
+    const context2d = canvasElement.getContext('2d');
     const col = colors[Math.floor(Math.random() * colors.length)];
-    const grad = cx.createRadialGradient(64, 64, 0, 64, 64, 64);
+    const grad = context2d.createRadialGradient(64, 64, 0, 64, 64, 64);
     grad.addColorStop(0, col + '30');
     grad.addColorStop(.4, col + '15');
     grad.addColorStop(1, col + '00');
-    cx.fillStyle = grad;
-    cx.fillRect(0, 0, 128, 128);
-    const tex = new THREE.CanvasTexture(cv);
+    context2d.fillStyle = grad;
+    context2d.fillRect(0, 0, 128, 128);
+    const tex = new THREE.CanvasTexture(canvasElement);
     const mat = new THREE.SpriteMaterial({ map: tex, transparent: true, opacity: .15 + Math.random() * .1, depthWrite: false, blending: THREE.AdditiveBlending });
-    const sp = new THREE.Sprite(mat);
-    sp.position.set((Math.random() - .5) * 20, yMin + Math.random() * (yMax - yMin), (Math.random() - .5) * 20);
-    sp.scale.setScalar(6 + Math.random() * 10);
-    group.add(sp);
+    const spriteMesh = new THREE.Sprite(mat);
+    spriteMesh.position.set((Math.random() - .5) * 20, yMin + Math.random() * (yMax - yMin), (Math.random() - .5) * 20);
+    spriteMesh.scale.setScalar(6 + Math.random() * 10);
+    group.add(spriteMesh);
   }
 }
 makeNebula(NEBULA_COUNT, LIFE_H-3, LIFE_H+3, ['#FFD700', '#C8A030', '#AA8820'], G.life);
@@ -1013,7 +933,7 @@ function makePulseRing(center, color, group) {
   group.add(mesh);
   return { mesh, mat, center, phase: Math.random() * 10 };
 }
-seph.forEach(s => pulseRings.push(makePulseRing(lp(s), s.c, G.life)));
+seph.forEach(sephNode => pulseRings.push(makePulseRing(getLifePos(sephNode), sephNode.color, G.life)));
 
 // ═══ VERTICAL ENERGY COLUMN — Central pillar connecting both planes ═══
 const colPts = [];
